@@ -10,10 +10,11 @@
 #include "DisplayClient.h"
 #include "ReceiverClient.h"
 #include "RecordingClient.h"
+#include "EventingClient.h"
 
-#include "WsddLib.h"
+#include "discoverer.h"
+#include "NotificationConsumer.h"
 
-using namespace Web;
 
 class BaseClient: IOnvifClient
 {
@@ -26,7 +27,9 @@ public:
 
     ~BaseClient();
     virtual int Init(const char* pchEndpoint);
-    virtual std::vector<std::string> GetDiscoveredDevices();
+    virtual std::vector<DiscoveryMatch> DiscoverDevices( OnvifDevice::Type type );
+    virtual void Subscribe();
+    virtual bool SetNotificationCatcher(notificationCatcherFunc func);
     virtual soap* GetSoap();
 
     //===DEV==============================
@@ -52,6 +55,14 @@ public:
     virtual int CreateRecordingJob (RecCreateRecordingJob &, RecCreateRecordingJobResponse &);
     virtual int DeleteRecording (const std::string &);
     virtual int DeleteRecordingJob (const std::string &);
+    //===MEDIA==============================
+    virtual int GetProfile(const std::string & profileToken, MedGetProfileResponse & resp){ return -1; }
+    virtual int GetProfiles(MedGetProfilesResponse &){ return -1; }
+    virtual int GetVideoSources(MedGetVideoSourcesResponse &){ return -1; }
+    virtual int GetStreamUri( const std::string& token, std::string & uri){ return -1; }
+    virtual int GetCompatibleVideoEncoderConfigurations(MedGetCompatibleVideoEncoderConfigurationsResponse& resp){ return -1; }
+    virtual int GetCompatibleVideoAnalyticsConfigurations(MedGetCompatibleVideoAnalyticsConfigurationsResponse& resp){ return -1; }
+
 private:
     BaseClient();
     BaseClient(const BaseClient&);
@@ -63,7 +74,8 @@ private:
     DisplayClient* m_pDispClient;
     ReceiverClient* m_pRecvClient;
     RecordingClient* m_pRecordingClient;
-    IWsdd * m_pWsdd;
+    NotificationConsumer* m_pNotsConsumer;
+    Discoverer m_pWsdd;
 };
 
 #endif // BASE_CLIENT__H

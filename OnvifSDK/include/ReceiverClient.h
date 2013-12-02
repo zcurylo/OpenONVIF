@@ -5,8 +5,6 @@
 #include "OnvifSDK.h"
 #include "WebReceiverBindingProxy.h"
 
-namespace Web {
-
 class ReceiverClient
 {
 public:
@@ -20,5 +18,5 @@ public:
 private:
 	ReceiverBindingProxy m_proxy;
 };
-} // namespace Web
 #endif	// RECEIVERCLIENT_H
+

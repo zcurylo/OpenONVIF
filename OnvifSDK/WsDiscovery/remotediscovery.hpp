@@ -43,7 +43,10 @@ struct RemoteDiscovery
 
     typedef ProbeMatch_t Hello_t;
     typedef ProbeMatch_t Bye_t;
+    // Data structure used as response for probe call (used by Device)
     typedef std::vector<ProbeMatch_t> ProbeMatches_t;
+    // Data structure used as request for probe call (used by Client)
+    typedef std::vector<Probe_t> Probes_t;
 
     virtual void hello(const Hello_t & arg) = 0;
     virtual void bye(const Bye_t & arg) = 0;
@@ -53,5 +56,8 @@ struct RemoteDiscovery
     static Proxy<RemoteDiscovery> * proxy();
     static Service<RemoteDiscovery> * service();
 };
+
+typedef Proxy<RemoteDiscovery> Proxy_t;
+typedef Service<RemoteDiscovery> Service_t;
 
 #endif // ONVIF_DISCOVERY_HPP

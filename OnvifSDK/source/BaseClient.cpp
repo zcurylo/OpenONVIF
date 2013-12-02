@@ -7,8 +7,7 @@ IOnvifClient* getOnvifClient()
 }
 
 BaseClient::BaseClient():
-    m_pSoap (soap_new()),
-    m_pWsdd (getWsdd())
+    m_pSoap (soap_new())
 {
 }
 
@@ -22,6 +21,10 @@ BaseClient::~BaseClient()
         delete m_pDispClient;
     if (m_pRecvClient)
         delete m_pRecvClient;
+    if (m_pRecordingClient)
+        delete m_pRecordingClient;
+    if (m_pNotsConsumer)
+        delete m_pNotsConsumer;
 
      if(m_pSoap)
      {
@@ -36,26 +39,45 @@ soap* BaseClient::GetSoap()
     return m_pSoap;
 }
 
-
 int BaseClient::Init(const char* pchEndpoint)
 {
-    if(!m_pSoap || !m_pWsdd)
+    if(!m_pSoap) {
+        SIGRLOG (SIGRWARNING, "BaseClient::Init failed" );
         return -1;
-
-    m_pWsdd->start(false);
+    }
 
     m_pDevClient = new DeviceClient (pchEndpoint, m_pSoap);
     m_pDevIOClient = new DeviceIOClient (pchEndpoint, m_pSoap);
     m_pDispClient = new DisplayClient (pchEndpoint, m_pSoap);
     m_pRecvClient = new ReceiverClient (pchEndpoint, m_pSoap);
-    m_pRecordingClient = new RecordingClient (pchEndpoint, m_pSoap);
+    m_pRecordingClient = new RecordingClient (pchEndpoint, m_pSoap);    
+    m_pNotsConsumer = new NotificationConsumer(pchEndpoint, m_pSoap);
 
-    return m_pDevClient && m_pDevClient && m_pDispClient && m_pRecvClient ? 0 : -1;
+    if(m_pNotsConsumer && !m_pNotsConsumer->init()) {
+        SIGRLOG (SIGRWARNING, "BaseClient::Init failed to init NotificationConsumer" );
+        return -1;
+    }
+
+    if( m_pDevClient && m_pDevIOClient && m_pDispClient &&
+        m_pRecvClient && m_pRecordingClient && m_pNotsConsumer )
+        return 0;
+
+    SIGRLOG (SIGRWARNING, "BaseClient::Init failed to create proxies" );
+    return -1;
 }
 
-std::vector<std::string> BaseClient::GetDiscoveredDevices()
+std::vector<DiscoveryMatch> BaseClient::DiscoverDevices( OnvifDevice::Type type )
 {
-    return m_pWsdd->getMembers();
+    return m_pWsdd.getMembers( DeviceInfoStorage::ResolveType(type) );
+}
+
+void BaseClient::Subscribe()
+{
+    m_pNotsConsumer->subscribe();
+}
+
+bool BaseClient::SetNotificationCatcher(notificationCatcherFunc func) {
+    return m_pNotsConsumer->setCatcher(func);
 }
 
 int BaseClient::GetDateAndTime(DevGetSystemDateAndTimeResponse & r)

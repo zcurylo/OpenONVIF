@@ -18,10 +18,7 @@
 # -----------------------------------------------------
 # GSOAP Import Directories
 # -----------------------------------------------------
-find_path(GSOAP_IMPORT_DIR
-  NAMES wsa.h
-  PATHS ${GSOAP_ROOT}/import ${GSOAP_ROOT}/share/gsoap/import
-)
+set(GSOAP_IMPORT_DIR "/usr/local/share/gsoap/import")
 
 # -----------------------------------------------------
 # GSOAP Libraries
@@ -46,6 +43,15 @@ find_path(GSOAP_INCLUDE_DIR
 	NAMES stdsoap2.h
 	HINTS ${GSOAP_ROOT} ${GSOAP_ROOT}/include ${GSOAP_ROOT}/include/*
 	DOC "The gsoap include directory"
+)
+
+# -----------------------------------------------------
+# GSOAP Plugin Directories
+# -----------------------------------------------------
+find_path(GSOAP_PLUGIN_DIR
+	NAMES wsaapi.h
+	PATHS /usr/share/gsoap/plugin /usr/local/share/gsoap/plugin
+	DOC "The gsoap plugin directory"
 )
 
 # -----------------------------------------------------
@@ -90,8 +96,8 @@ endif ( "${GSOAP_VERSION}"  VERSION_LESS "2.7.6")
 # -----------------------------------------------------
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(gsoap DEFAULT_MSG GSOAP_LIBRARIES
-	GSOAP_INCLUDE_DIR GSOAP_WSDL2H GSOAP_SOAPCPP2)
-mark_as_advanced(GSOAP_INCLUDE_DIR GSOAP_LIBRARIES GSOAP_WSDL2H GSOAP_SOAPCPP2)
+	GSOAP_INCLUDE_DIR GSOAP_WSDL2H GSOAP_SOAPCPP2 GSOAP_IMPORT_DIR GSOAP_PLUGIN_DIR)
+mark_as_advanced(GSOAP_INCLUDE_DIR GSOAP_LIBRARIES GSOAP_WSDL2H GSOAP_SOAPCPP2 GSOAP_IMPORT_DIR GSOAP_PLUGIN_DIR)
 
 
 if(GSOAP_FOUND AND GSOAP_FIND_REQUIRED AND GSOAP_FIND_VERSION AND ${GSOAP_VERSION} VERSION_LESS ${GSOAP_FIND_VERSION})

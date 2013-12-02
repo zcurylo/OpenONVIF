@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # SIGRLOG_CURRLEVEL:
 # level of verboseness of the logger range [0..4]
-add_definitions(-DSIGRLOG_CURRLEVEL=2)
+add_definitions(-DSIGRLOG_CURRLEVEL=4)
 # SIGRLOG_OUTPUT:
 # destinations of the logger output
 # 0 - none, 1 - console only, 2 - file only, 3 - console and file
@@ -24,14 +24,11 @@ include_directories(${PROJECT_SOURCE_DIR}/../../common
                     ${PROJECT_SOURCE_DIR})
 
 
-set(HEADERS ${PROJECT_SOURCE_DIR}/../../OnvifSDK/include/OnvifSDK.h
+set(INC ${PROJECT_SOURCE_DIR}/../../OnvifSDK/include/OnvifSDK.h
         ${PROJECT_SOURCE_DIR}/../../common/sigrlog.h)	
 
-set(SOURCES		${PROJECT_SOURCE_DIR}/mainServ.cpp
-			${PROJECT_SOURCE_DIR}/OnvifTestServer.h
-		        ${PROJECT_SOURCE_DIR}/OnvifTestServer.cpp)
-
-add_executable(OnvifTestServer  ${HEADERS} ${SOURCES})
-
+file( GLOB HEADERS ${PROJECT_SOURCE_DIR}/*.h )
+file( GLOB SOURCES ${PROJECT_SOURCE_DIR}/*.cpp )
+add_executable(OnvifTestServer  ${INC} ${HEADERS} ${SOURCES})
 target_link_libraries(OnvifTestServer ${SDKLIB} pthread)
 

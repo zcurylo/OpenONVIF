@@ -1,9 +1,10 @@
-#include <remotediscovery.hpp>
-#include <WsddRemoteDiscoveryBindingProxy.h>
-#include <Wsdd.nsmap>
-#include "wsa.hpp"
 
 #include <sstream>
+
+#include "sigrlog.h"
+#include "wsa.hpp"
+#include "remotediscovery.hpp"
+#include "WebRemoteDiscoveryBindingProxy.h"
 
 const std::string TO_TS_URL = "urn:schemas-xmlsoap-org:ws:2005:04:discovery";
 
@@ -111,8 +112,23 @@ public:
             req.Scopes = &req_scopes;
         }
 
-        if (Probe(&req, NULL) != 0)
+        wsd__ProbeMatchesType resp;
+        if (Probe(&req, &resp ) != 0)
             throw SoapException(RemoteDiscoveryBindingProxy::soap);
+
+        SIGRLOG( SIGRDEBUG2, "resp.ProbeMatch.size() %d", resp.ProbeMatch.size());
+
+        ProbeMatches_t matches;
+        for( int i = 0; i < resp.ProbeMatch.size(); ++i )
+            if( !resp.ProbeMatch[i]->XAddrs->empty() ) {
+                ProbeMatch_t match;
+                match.xaddrs = new std::string( *resp.ProbeMatch[i]->XAddrs );
+                match.types = new std::string( *resp.ProbeMatch[i]->Types );
+                match.scopes = new Scopes_t();
+                match.scopes->item = resp.ProbeMatch[i]->Scopes->__item;
+                matches.push_back(match);
+            }
+        return matches;
     }
 
 //    virtual void probeMatches(const ProbeMatches_t & items, const std::string & relatesTo)

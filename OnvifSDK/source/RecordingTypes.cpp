@@ -2,7 +2,6 @@
 #include "commonTypes.h"
 #include "WebRecordingBindingProxy.h"
 
-namespace Web {
 #define EXTRA_CONSTRUCT() \
 {\
     if (d->RecordingConfiguration != NULL) \
@@ -88,4 +87,3 @@ RecDeleteRecordingJob::setToken (const std::string & str) { d->JobToken = str; }
 
 CLASS_CTORS(trc, Rec, DeleteRecordingJobResponse)
 /////////////////////////////////////////////////////////////////////////////////////
-} // namespace Web

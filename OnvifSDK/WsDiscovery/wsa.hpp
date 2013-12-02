@@ -1,5 +1,5 @@
-#ifndef ONVIFXX_WSDD_HPP
-#define ONVIFXX_WSDD_HPP
+#ifndef ONVIFXX_WSA_HPP
+#define ONVIFXX_WSA_HPP
 
 #if defined(SOAP_WSA_2003)
 # define SOAP_WSA(member) wsa3__##member
@@ -20,7 +20,7 @@
 #endif
 
 #include <onvifxx.hpp>
-#include <WsddH.h>
+#include <WebH.h>
 
 class Wsa
 {
@@ -30,9 +30,7 @@ public:
 
     static uint & instanceId();
     static std::string & sequenceId();
-    static uint & messageNumber();
-
-    std::string randUuid();
+    static uint & messageNumber();    
 
     int allocHeader();
     int check() const;
@@ -98,7 +96,8 @@ public:
     };
 
 private:
+    void setWsaString(char** pchWsaString, const std::string & value);
     soap * soap_;
     wsd__AppSequenceType sequence_;
 };
-#endif // ONVIFXX_WSDD_HPP
+#endif // ONVIFXX_WSA_HPP

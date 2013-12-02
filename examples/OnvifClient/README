@@ -1,7 +1,12 @@
 
 === OnvifTestClient ===
 ### desc ###
-  It is a simple Onvif client, which use DeviceManagement Service of the Server and performs WsDiscovery in the local network.
+  It is a simple Onvif client, which performs WsDiscovery in the local network,
+  then, with use of the DeviceManagement Service,
+  call following funcs on the first discovered ONVIF device:
+    * GetSystemDateAndTime.
+    * Subscribe
+    * Then log received Event Notifications
 ### prerequisites ###
 * build OnvifSDK
  

@@ -5,7 +5,6 @@
 #include "OnvifSDK.h"
 #include "WebDeviceBindingProxy.h"
 
-namespace Web {
 class DeviceClient
 {
 public:
@@ -22,6 +21,5 @@ public:
 private:
 	DeviceBindingProxy m_proxy;
 };
-} // namespace Web
 #endif	// deviceClient_H
 

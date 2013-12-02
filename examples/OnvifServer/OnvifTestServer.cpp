@@ -19,3 +19,12 @@ int OnvifTestServer::GetDateAndTime(DevGetSystemDateAndTimeResponse & dt)
     return 0;
 }
 
+int OnvifTestServer::GetUsers( /*out*/ DevGetUsersResponse & resp) {
+    std::vector<std::string> vec;
+    vec.push_back("admin");
+    vec.push_back("admin");
+    vec.push_back("Administrator");
+    resp.AddUser(vec);
+    return 0;
+}
+

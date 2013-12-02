@@ -1,7 +1,6 @@
 
 #include "DisplayClient.h"
 
-namespace Web {
 
 DisplayClient::DisplayClient(const char * pchAdress, soap * s):m_proxy(s)
 {
@@ -42,4 +41,3 @@ int DisplayClient::CreatePaneConfiguration(DispCreatePaneConfiguration & req, Di
 
     CHECKRETURN(nRes, "DisplayClient::CreatePaneConfiguration");
 }
-} // namespace Web

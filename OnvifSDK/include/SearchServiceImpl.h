@@ -3,7 +3,6 @@
 
 #include "WebSearchBindingService.h"
 class BaseServer;
-namespace Web {
 class SearchServiceImpl : public SearchBindingService
 {
 private:
@@ -59,5 +58,4 @@ public:
     /// Web service operation 'GetMetadataSearchResults' (returns error code or SOAP_OK)
     virtual	int GetMetadataSearchResults(_tse__GetMetadataSearchResults *tse__GetMetadataSearchResults, _tse__GetMetadataSearchResultsResponse *tse__GetMetadataSearchResultsResponse) { return SOAP_OK; }
 };
-} // namespace Web
 #endif // SearchServiceImpl

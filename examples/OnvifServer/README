@@ -1,8 +1,9 @@
 
 === OnvifTestServer ===
 ### desc ###
-  It is a simple Onvif Server, which implements GetSystemDateAndTime command of the DeviceManagement Service;
-  and performs OnvifSDK in the local network.
+  It is a simple Onvif Server, which implements GetSystemDateAndTime and
+  GetUsers commands of the DeviceManagement Service,
+  and exposes device for the WS-Discovery in current network segment
 ### prerequisites ###
 * build OnvifSDK
  

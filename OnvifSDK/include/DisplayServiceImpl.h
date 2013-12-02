@@ -4,7 +4,6 @@
 #include "WebDisplayBindingService.h"
 class BaseServer;
 
-namespace Web {
 class DisplayServiceImpl : public DisplayBindingService
 {
 private:
@@ -48,6 +47,5 @@ public:
 	virtual	int DeletePaneConfiguration(_tls__DeletePaneConfiguration *tls__DeletePaneConfiguration, _tls__DeletePaneConfigurationResponse *tls__DeletePaneConfigurationResponse) {return SOAP_OK;};
 
 };
-} // namespace Web
 #endif // WebDisplayBindingServiceImpl_H
 

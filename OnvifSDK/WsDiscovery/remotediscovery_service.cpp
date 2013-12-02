@@ -1,6 +1,6 @@
 #include "sigrlog.h"
 #include <remotediscovery.hpp>
-#include <WsddRemoteDiscoveryBindingService.h>
+#include <WebRemoteDiscoveryBindingService.h>
 #include "wsa.hpp"
 #include <assert.h>
 
@@ -171,69 +171,62 @@ public:
     {
         assert(wsd__Probe != NULL && wsd__ProbeResponse != NULL);
 
-        if (p != NULL) {
-            RemoteDiscovery::Probe_t arg;
-            RemoteDiscovery::Scopes_t scopes;
+        if (p == NULL) {
+        	return SOAP_USER_ERROR;
+		}
+        RemoteDiscovery::Probe_t arg;
+        RemoteDiscovery::Scopes_t scopes;
 
-            arg.types = wsd__Probe->Types;
-            arg.scopes = NULL;
-            if (wsd__Probe->Scopes != NULL) {
-                arg.scopes = &scopes;
-                arg.scopes->item = wsd__Probe->Scopes->__item;
-                arg.scopes->matchBy = wsd__Probe->Scopes->MatchBy;
-            }
-
-            // Header
-            std::string relatesTo = soap_header()->wsa__MessageID;
-            wsa_.request("", SOAP_NAMESPACE_OF_wsd"/ProbeMatches");
-            wsa_.addRelatesTo(relatesTo);
-            wsa_.addAppSequence();
-
-            // Body
-            wsd__ProbeMatchesType req;
-            req.soap_default(RemoteDiscoveryBindingService::soap);
-
-            RemoteDiscovery::ProbeMatches_t items = p->probe(arg);
-            matches_.reserve(items.size());
-
-            // Fill the result array wsd__ProbeMatchType, converted from ProbeMatch;
-            wsd__ProbeResponse->ProbeMatch.resize(items.size());
-            for (size_t i = 0, sz = items.size(); i < sz; ++i) {
-                matches_.push_back(Matches_t::value_type(RemoteDiscoveryBindingService::soap, items[i]));
-                matches_.back().MetadataVersion = items[i].version;
-                wsd__ProbeResponse->ProbeMatch[i] = &matches_.back();
-            }
-
-            for (int i = 0; i < 2; ++i) {
-                soap_serializeheader(RemoteDiscoveryBindingService::soap);
-                wsd__ProbeResponse->soap_serialize(RemoteDiscoveryBindingService::soap);
-                if (soap_begin_count(RemoteDiscoveryBindingService::soap))
-                    return RemoteDiscoveryBindingService::soap->error;
-
-                if (RemoteDiscoveryBindingService::soap->mode & SOAP_IO_LENGTH) {
-                    if (soap_envelope_begin_out(RemoteDiscoveryBindingService::soap)
-                     || soap_putheader(RemoteDiscoveryBindingService::soap)
-                     || soap_body_begin_out(RemoteDiscoveryBindingService::soap)
-                     || wsd__ProbeResponse->soap_put(RemoteDiscoveryBindingService::soap, "wsd:ProbeMatches", "")
-                     || soap_body_end_out(RemoteDiscoveryBindingService::soap)
-                     || soap_envelope_end_out(RemoteDiscoveryBindingService::soap))
-                         return RemoteDiscoveryBindingService::soap->error;
-                };
-                if (soap_end_count(RemoteDiscoveryBindingService::soap)
-                 || soap_response(RemoteDiscoveryBindingService::soap, SOAP_OK)
-                 || soap_envelope_begin_out(RemoteDiscoveryBindingService::soap)
-                 || soap_putheader(RemoteDiscoveryBindingService::soap)
-                 || soap_body_begin_out(RemoteDiscoveryBindingService::soap)
-                 || wsd__ProbeResponse->soap_put(RemoteDiscoveryBindingService::soap, "wsd:ProbeMatches", "")
-                 || soap_body_end_out(RemoteDiscoveryBindingService::soap)
-                 || soap_envelope_end_out(RemoteDiscoveryBindingService::soap)
-                 || soap_end_send(RemoteDiscoveryBindingService::soap))
-                    return RemoteDiscoveryBindingService::soap->error;
-            }
+        arg.types = wsd__Probe->Types;
+        arg.scopes = NULL;
+        if (wsd__Probe->Scopes != NULL) {
+            arg.scopes = &scopes;
+            arg.scopes->item = wsd__Probe->Scopes->__item;
+            arg.scopes->matchBy = wsd__Probe->Scopes->MatchBy;
         }
 
-        return SOAP_USER_ERROR;
+        // Header
+        std::string relatesTo( soap_header()->wsa5__MessageID);
+        wsa_.request("", SOAP_NAMESPACE_OF_wsd"/ProbeMatches");
+        wsa_.addRelatesTo(relatesTo);
+        wsa_.addAppSequence();
 
+        // Body
+        RemoteDiscovery::ProbeMatches_t items = p->probe(arg);
+        matches_.reserve(items.size());
+
+        // Fill the result array wsd__ProbeMatchType, converted from ProbeMatch;
+        wsd__ProbeResponse->ProbeMatch.resize(items.size());
+        for (size_t i = 0, sz = items.size(); i < sz; ++i) {
+            matches_.push_back(Matches_t::value_type(RemoteDiscoveryBindingService::soap, items[i]));
+            matches_.back().MetadataVersion = items[i].version;
+            wsd__ProbeResponse->ProbeMatch[i] = &matches_.back();
+        }
+
+        soap_serializeheader(RemoteDiscoveryBindingService::soap);
+        wsd__ProbeResponse->soap_serialize(RemoteDiscoveryBindingService::soap);
+        if (soap_begin_count(RemoteDiscoveryBindingService::soap))
+            return RemoteDiscoveryBindingService::soap->error;
+
+        if (RemoteDiscoveryBindingService::soap->mode & SOAP_IO_LENGTH) {
+            if (soap_envelope_begin_out(RemoteDiscoveryBindingService::soap)
+             || soap_putheader(RemoteDiscoveryBindingService::soap)
+             || soap_body_begin_out(RemoteDiscoveryBindingService::soap)
+             || wsd__ProbeResponse->soap_put(RemoteDiscoveryBindingService::soap, "wsd:ProbeMatches", "")
+             || soap_body_end_out(RemoteDiscoveryBindingService::soap)
+             || soap_envelope_end_out(RemoteDiscoveryBindingService::soap))
+                 return RemoteDiscoveryBindingService::soap->error;
+        };
+        if (soap_end_count(RemoteDiscoveryBindingService::soap)
+         || soap_response(RemoteDiscoveryBindingService::soap, SOAP_OK)
+         || soap_envelope_begin_out(RemoteDiscoveryBindingService::soap)
+         || soap_putheader(RemoteDiscoveryBindingService::soap)
+         || soap_body_begin_out(RemoteDiscoveryBindingService::soap)
+         || wsd__ProbeResponse->soap_put(RemoteDiscoveryBindingService::soap, "wsd:ProbeMatches", "")
+         || soap_body_end_out(RemoteDiscoveryBindingService::soap)
+         || soap_envelope_end_out(RemoteDiscoveryBindingService::soap)
+         || soap_end_send(RemoteDiscoveryBindingService::soap))
+            return RemoteDiscoveryBindingService::soap->error;
     }
 
 //private:

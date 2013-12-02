@@ -4,14 +4,6 @@
 #include "WebDeviceBindingService.h"
 class BaseServer;
 
-namespace Web {
-#define OnvifManufacturer		"OnvifManufacturer#1"
-#define OnvifModel				"OnvifModel#1"
-#define OnvifFirmwareVersion	"001"
-#define OnvifSerialNumber		"001"
-#define OnvifHardwareId  		"001"
-#define OnvifDeviceServiceXAddr "192.168.10.23:9999"
-
 class DeviceServiceImpl : public DeviceBindingService
 {
 private:
@@ -20,7 +12,7 @@ public:
     DeviceServiceImpl(BaseServer * pBaseServer, struct soap * pData):DeviceBindingService(pData)
 	{
         m_pBaseServer = pBaseServer;
-	};
+    }
 
 	virtual DeviceBindingService* copy();
 
@@ -60,7 +52,7 @@ public:
 	virtual	int GetSystemSupportInformation(_tds__GetSystemSupportInformation *tds__GetSystemSupportInformation, _tds__GetSystemSupportInformationResponse *tds__GetSystemSupportInformationResponse) {return SOAP_OK;};
 
 	/// Web service operation 'GetScopes' (returns error code or SOAP_OK)
-	virtual	int GetScopes(_tds__GetScopes *tds__GetScopes, _tds__GetScopesResponse *tds__GetScopesResponse) {return SOAP_OK;};
+    virtual	int GetScopes(_tds__GetScopes *tds__GetScopes, _tds__GetScopesResponse *tds__GetScopesResponse);
 
 	/// Web service operation 'SetScopes' (returns error code or SOAP_OK)
 	virtual	int SetScopes(_tds__SetScopes *tds__SetScopes, _tds__SetScopesResponse *tds__SetScopesResponse) {return SOAP_OK;};
@@ -517,5 +509,4 @@ public:
     virtual	int StartSystemRestore_(_tds__StartSystemRestore *tds__StartSystemRestore, _tds__StartSystemRestoreResponse *tds__StartSystemRestoreResponse) {return SOAP_OK;};
 
 };
-}; // namespace Web
 #endif // WebDeviceBindingServiceImpl_H

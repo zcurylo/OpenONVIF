@@ -5,8 +5,6 @@
 #include "OnvifSDK.h"
 #include "WebDisplayBindingProxy.h"
 
-namespace Web {
-
 class DisplayClient
 {
 public:
@@ -21,6 +19,5 @@ public:
 private:
 	DisplayBindingProxy m_proxy;
 };
-} // namespace Web
 #endif	// DISPLAYCLIENT_H
 

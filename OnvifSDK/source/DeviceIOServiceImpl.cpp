@@ -3,7 +3,6 @@
 #include "DeviceIOServiceImpl.h"
 #include "BaseServer.h"
 
-namespace Web {
 #warning TODO for while not supporting copy
 DeviceIOBindingService* DeviceIOServiceImpl::copy()
 {
@@ -18,4 +17,4 @@ int DeviceIOServiceImpl::GetVideoOutputs(_tmd__GetVideoOutputs *tmd__GetVideoOut
 
     CHECKRETURN(nRes, "DeviceIOServiceImpl::GetVideoOutputs");
 }
-} // namespace Web
+

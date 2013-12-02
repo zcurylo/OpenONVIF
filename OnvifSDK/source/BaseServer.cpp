@@ -1,8 +1,6 @@
 
 #include "BaseServer.h"
 
-using namespace Web;
-
 static GeneratorInitializer generatorInitializer;
 
 std::string GenerateToken()
@@ -17,19 +15,32 @@ std::string GenerateToken()
 
 IOnvifServer* getOnvifServer()
 {
-    return BaseServer::Instance();
+    return static_cast<IOnvifServer*>( new BaseServer() );
 }
 
-BaseServer::BaseServer():
-    m_pWsdd(NULL),
+void deleteOnvifServer(IOnvifServer* obj) {
+    BaseServer::deleteObject(obj);
+}
+
+BaseServer::BaseServer():    
     m_pSoap(soap_new())
 {
 }
 
-int BaseServer::Init(int iServicesToHost, int iPort, IOnvif *pHandler)
+MedProfile
+BaseServer::CreateMediaProfile(const std::string& name, const std::string& token) {
+    return MedProfile(m_pSoap, name , token);
+}
+
+MedVideoSource
+BaseServer::CreateVideoSource(const std::string &token, int w, int h, double frmRate) {
+    return MedVideoSource(m_pSoap, token, w, h, frmRate);
+}
+
+
+int BaseServer::Init(int iServicesToHost, IOnvif *pHandler)
 {
     m_pHandler = pHandler;
-    m_iPort = iPort;
     m_DevService     = (iServicesToHost & DEV_S)    ? new DeviceServiceImpl(this, m_pSoap)   : NULL;
     m_DevIOService   = (iServicesToHost & DEVIO_S)  ? new DeviceIOServiceImpl(this, m_pSoap) : NULL;
     m_DispService    = (iServicesToHost & DISP_S)   ? new DisplayServiceImpl(this, m_pSoap)  : NULL;
@@ -37,10 +48,21 @@ int BaseServer::Init(int iServicesToHost, int iPort, IOnvif *pHandler)
     m_ReplayService  = (iServicesToHost & REPLAY_S) ? new ReplayServiceImpl(this, m_pSoap)   : NULL;
     m_RecordService  = (iServicesToHost & RECORD_S) ? new RecordingServiceImpl(this, m_pSoap): NULL;
     m_SearchService  = (iServicesToHost & SEARCH_S) ? new SearchServiceImpl(this, m_pSoap)   : NULL;
+    m_MediaService   = (iServicesToHost & MEDIA_S)  ? new MediaServiceImpl(this, m_pSoap)    : NULL;
+    m_AnService      = (iServicesToHost & ANALY_S)  ? new AnalyticsServiceImpl(this, m_pSoap): NULL;
+    m_NotsProducer   = (iServicesToHost & EVNT_S)   ? new NotificationProducer(this, m_pSoap): NULL;
+    m_pWsdd = new Discoverable();
 
     int iRet = RunWsDiscovery();
-    if(iRet != 0)
-            SIGRLOG (SIGRWARNING, "BaseServer::Run RunWsDiscovery failed");
+    if(iRet != 0) {
+        SIGRLOG (SIGRWARNING, "BaseServer::Run RunWsDiscovery failed");
+        return -1;
+    }
+
+    if(m_NotsProducer && (! m_NotsProducer->init()) ) {
+        SIGRLOG (SIGRWARNING, "BaseServer::Run NotificationProducer init failed");
+        return -1;
+    }
 
     m_bCreated = m_pSoap && m_DevService && m_pHandler && (iRet == 0);
     return m_bCreated ? 0 : -1;
@@ -48,59 +70,57 @@ int BaseServer::Init(int iServicesToHost, int iPort, IOnvif *pHandler)
 
 BaseServer::~BaseServer()
 {
-    if(m_pWsdd)
+    if(m_NotsProducer)
+        m_NotsProducer->stop();
+    if(m_pWsdd) {
         m_pWsdd->stop();
+        delete  m_pWsdd;
+        m_pWsdd = NULL;
+    }
 
-    if(m_RecvService)
-        delete m_RecvService;
-    if(m_DispService)
-        delete m_DispService;
-    if(m_DevIOService)
-        delete m_DevIOService;
-    if(m_DevService)
-        delete m_DevService;
-    if(m_ReplayService)
-        delete m_ReplayService;
-    if(m_RecordService)
-        delete m_RecordService;
-    if(m_SearchService)
-        delete m_SearchService;
-
-    if(m_pSoap)
-    {
+    deleteService(m_RecvService);
+    deleteService(m_DispService);
+    deleteService(m_DevIOService);
+    deleteService(m_DevService);
+    deleteService(m_ReplayService);
+    deleteService(m_RecordService);
+    deleteService(m_SearchService);
+    deleteService(m_MediaService);
+    deleteService(m_AnService);
+    deleteService(m_NotsProducer);
+    if(m_pSoap) {
         soap_destroy(m_pSoap);
         soap_end(m_pSoap);
         soap_free(m_pSoap);
     }
 }
 
-int BaseServer::Run()
-{
-    if(!m_bCreated)
-    {
+int BaseServer::Run() {
+    if(!m_bCreated) {
         SIGRLOG(SIGRCRITICAL, "BaseServer::Run Services were not created");
         return -1;
-    }    
+    }
 
-    int iRet = soap_bind(m_pSoap, NULL, m_iPort, 100);
+    int iRet = soap_bind(m_pSoap, NULL, m_webservicePort, 100);
 
-    if (iRet == SOAP_INVALID_SOCKET)
-    {
-        SIGRLOG(SIGRCRITICAL, "BaseServer::Run Binding on %d port failed", m_iPort);
+    if (iRet == SOAP_INVALID_SOCKET) {
+        SIGRLOG(SIGRCRITICAL, "BaseServer::Run Binding on %d port failed", m_webservicePort);
         return -1;
     }
 
     while(1)
     {
         iRet = soap_accept(m_pSoap);
-        if (iRet == SOAP_INVALID_SOCKET)
-        {
+        if (iRet == SOAP_INVALID_SOCKET) {
             SIGRLOG(SIGRCRITICAL, "BaseServer::Run accepting failed");
             return -1;
         }
 
-        if (soap_begin_serve(m_pSoap) != SOAP_OK)
-            SIGRLOG(SIGRWARNING, "BaseServer::Run serve failed");
+        iRet = soap_begin_serve(m_pSoap);
+        if ( iRet != SOAP_OK) {
+            SIGRLOG(SIGRWARNING, "BaseServer::Run serve %d failed", iRet);
+            continue;
+        }
 
         if (m_DevService)
             iRet = m_DevService->dispatch();
@@ -138,24 +158,58 @@ int BaseServer::Run()
         if (iRet == SOAP_OK)
             continue;
 
+        if (m_MediaService)
+            iRet = m_MediaService->dispatch();
+
+        if (iRet == SOAP_OK)
+            continue;
+
         if (m_SearchService)
             iRet = m_SearchService->dispatch();
 
+        if (iRet == SOAP_OK)
+            continue;
+
+        if (m_AnService)
+            iRet = m_AnService->dispatch();
+
+        if (iRet == SOAP_OK)
+            continue;
+
+        if (m_NotsProducer)
+            iRet = m_NotsProducer->dispatch();
+
         if(iRet != SOAP_OK)
-            SIGRLOG(SIGRWARNING, "BaseServer::Run SOAP_Error= %d", iRet);
+            SIGRLOG(SIGRWARNING, "BaseServer::Run SOAP_Error= %d at %s", iRet, m_pSoap->action);
     }
 
     return 0;
 }
 
+int BaseServer::SetDeviceInfo( OnvifDevice::Type type,
+                               const std::string & manufacturer,
+                               const std::string & model,
+                               const std::string & firmwareVersion,
+                               const std::string & serialNumber,
+                               const std::string & hardwareId,
+                               const std::string & scopes,
+                               const std::string & interface,
+                               int webservicePort ) {
+    return DeviceInfoStorage::SetDeviceInfo( type, manufacturer, model,
+                                             firmwareVersion, serialNumber, hardwareId,
+                                             scopes, interface, webservicePort );
+}
+
 int BaseServer::RunWsDiscovery()
 {
-    m_pWsdd = getWsdd();
+	if(!m_pWsdd)
+		return -1;
+    return m_pWsdd->start(true, this);
+}
 
-    if(!m_pWsdd)
-        return -1;
-    int iRet = m_pWsdd->start(true);
-    return iRet;
+std::string
+BaseServer::GetIp() {
+    return DeviceInfoStorage::getInterfaceIp("eth0");
 }
 
 int BaseServer::GetDateAndTime( DevGetSystemDateAndTimeResponse & r)
@@ -215,6 +269,7 @@ int BaseServer::SetReceiverMode( const std::string & recvToken, bool bMode )
 {
     return m_pHandler->SetReceiverMode(recvToken, bMode);
 }
+
 //===RECORDING=========================
 int BaseServer::CreateRecording (RecCreateRecording & req, RecCreateRecordingResponse & resp)
 {
@@ -234,4 +289,37 @@ int BaseServer::DeleteRecording (const std::string & str)
 int BaseServer::DeleteRecordingJob (const std::string &str)
 {
     return m_pHandler->DeleteRecordingJob(str);
+}
+
+//===MEDIA=============================
+int
+BaseServer::GetProfile( const std::string & profileToken,
+                        MedGetProfileResponse & resp) {
+    return m_pHandler->GetProfile(profileToken, resp);
+}
+
+int
+BaseServer::GetProfiles( MedGetProfilesResponse & r) {
+    return m_pHandler->GetProfiles(r);
+}
+
+int
+BaseServer::GetVideoSources( MedGetVideoSourcesResponse & r) {
+    return m_pHandler->GetVideoSources(r);
+}
+
+int
+BaseServer::GetStreamUri( const std::string& token,
+                          std::string & uri) {
+    return m_pHandler->GetStreamUri(token, uri);
+}
+
+int
+BaseServer::GetCompatibleVideoEncoderConfigurations(MedGetCompatibleVideoEncoderConfigurationsResponse& resp) {
+    return m_pHandler->GetCompatibleVideoEncoderConfigurations(resp);
+}
+
+int
+BaseServer::GetCompatibleVideoAnalyticsConfigurations(MedGetCompatibleVideoAnalyticsConfigurationsResponse& resp) {
+    return m_pHandler->GetCompatibleVideoAnalyticsConfigurations(resp);
 }

@@ -2,23 +2,28 @@
 #define soapMediaBindingServiceImpl_H
 
 #include "WebMediaBindingService.h"
-class OnvifServer;
-namespace Web {
+
+class BaseServer;
+
 class MediaServiceImpl : public MediaBindingService
 {
 private:
-	OnvifServer * m_pOnvifServer;
+    BaseServer * m_pBaseServer;
 public:
-	MediaServiceImpl(OnvifServer * pOnvifServer):MediaBindingService()
-	{
-		m_pOnvifServer = pOnvifServer;
+    MediaServiceImpl( BaseServer * pServer, struct soap* pData):
+        MediaBindingService( pData ),
+        m_pBaseServer( pServer ) {
 	}
+
+    MediaBindingService *copy() {
+        return NULL;
+    }
 
 	/// Web service operation 'GetServiceCapabilities' (returns error code or SOAP_OK)
     virtual	int GetServiceCapabilities(_trt__GetServiceCapabilities *trt__GetServiceCapabilities, _trt__GetServiceCapabilitiesResponse *trt__GetServiceCapabilitiesResponse){return SOAP_OK;};
 
 	/// Web service operation 'GetVideoSources' (returns error code or SOAP_OK)
-    virtual	int GetVideoSources(_trt__GetVideoSources *trt__GetVideoSources, _trt__GetVideoSourcesResponse *trt__GetVideoSourcesResponse){return SOAP_OK;};
+    virtual	int GetVideoSources(_trt__GetVideoSources *trt__GetVideoSources, _trt__GetVideoSourcesResponse *trt__GetVideoSourcesResponse);
 
 	/// Web service operation 'GetAudioSources' (returns error code or SOAP_OK)
     virtual	int GetAudioSources(_trt__GetAudioSources *trt__GetAudioSources, _trt__GetAudioSourcesResponse *trt__GetAudioSourcesResponse){return SOAP_OK;};
@@ -30,10 +35,10 @@ public:
     virtual	int CreateProfile(_trt__CreateProfile *trt__CreateProfile, _trt__CreateProfileResponse *trt__CreateProfileResponse){return SOAP_OK;};
 
 	/// Web service operation 'GetProfile' (returns error code or SOAP_OK)
-    virtual	int GetProfile(_trt__GetProfile *trt__GetProfile, _trt__GetProfileResponse *trt__GetProfileResponse){return SOAP_OK;};
+    virtual	int GetProfile(_trt__GetProfile *trt__GetProfile, _trt__GetProfileResponse *trt__GetProfileResponse);
 
 	/// Web service operation 'GetProfiles' (returns error code or SOAP_OK)
-    virtual	int GetProfiles(_trt__GetProfiles *trt__GetProfiles, _trt__GetProfilesResponse *trt__GetProfilesResponse){return SOAP_OK;};
+    virtual	int GetProfiles(_trt__GetProfiles *trt__GetProfiles, _trt__GetProfilesResponse *trt__GetProfilesResponse);
 
 	/// Web service operation 'AddVideoEncoderConfiguration' (returns error code or SOAP_OK)
     virtual	int AddVideoEncoderConfiguration(_trt__AddVideoEncoderConfiguration *trt__AddVideoEncoderConfiguration, _trt__AddVideoEncoderConfigurationResponse *trt__AddVideoEncoderConfigurationResponse){return SOAP_OK;};
@@ -141,7 +146,7 @@ public:
     virtual	int GetAudioDecoderConfiguration(_trt__GetAudioDecoderConfiguration *trt__GetAudioDecoderConfiguration, _trt__GetAudioDecoderConfigurationResponse *trt__GetAudioDecoderConfigurationResponse){return SOAP_OK;};
 
 	/// Web service operation 'GetCompatibleVideoEncoderConfigurations' (returns error code or SOAP_OK)
-    virtual	int GetCompatibleVideoEncoderConfigurations(_trt__GetCompatibleVideoEncoderConfigurations *trt__GetCompatibleVideoEncoderConfigurations, _trt__GetCompatibleVideoEncoderConfigurationsResponse *trt__GetCompatibleVideoEncoderConfigurationsResponse){return SOAP_OK;};
+    virtual	int GetCompatibleVideoEncoderConfigurations(_trt__GetCompatibleVideoEncoderConfigurations *trt__GetCompatibleVideoEncoderConfigurations, _trt__GetCompatibleVideoEncoderConfigurationsResponse *trt__GetCompatibleVideoEncoderConfigurationsResponse);
 
 	/// Web service operation 'GetCompatibleVideoSourceConfigurations' (returns error code or SOAP_OK)
     virtual	int GetCompatibleVideoSourceConfigurations(_trt__GetCompatibleVideoSourceConfigurations *trt__GetCompatibleVideoSourceConfigurations, _trt__GetCompatibleVideoSourceConfigurationsResponse *trt__GetCompatibleVideoSourceConfigurationsResponse){return SOAP_OK;};
@@ -153,7 +158,7 @@ public:
     virtual	int GetCompatibleAudioSourceConfigurations(_trt__GetCompatibleAudioSourceConfigurations *trt__GetCompatibleAudioSourceConfigurations, _trt__GetCompatibleAudioSourceConfigurationsResponse *trt__GetCompatibleAudioSourceConfigurationsResponse){return SOAP_OK;};
 
 	/// Web service operation 'GetCompatibleVideoAnalyticsConfigurations' (returns error code or SOAP_OK)
-    virtual	int GetCompatibleVideoAnalyticsConfigurations(_trt__GetCompatibleVideoAnalyticsConfigurations *trt__GetCompatibleVideoAnalyticsConfigurations, _trt__GetCompatibleVideoAnalyticsConfigurationsResponse *trt__GetCompatibleVideoAnalyticsConfigurationsResponse){return SOAP_OK;};
+    virtual	int GetCompatibleVideoAnalyticsConfigurations(_trt__GetCompatibleVideoAnalyticsConfigurations *trt__GetCompatibleVideoAnalyticsConfigurations, _trt__GetCompatibleVideoAnalyticsConfigurationsResponse *trt__GetCompatibleVideoAnalyticsConfigurationsResponse);
 
 	/// Web service operation 'GetCompatibleMetadataConfigurations' (returns error code or SOAP_OK)
     virtual	int GetCompatibleMetadataConfigurations(_trt__GetCompatibleMetadataConfigurations *trt__GetCompatibleMetadataConfigurations, _trt__GetCompatibleMetadataConfigurationsResponse *trt__GetCompatibleMetadataConfigurationsResponse){return SOAP_OK;};
@@ -213,7 +218,7 @@ public:
     virtual	int GetGuaranteedNumberOfVideoEncoderInstances(_trt__GetGuaranteedNumberOfVideoEncoderInstances *trt__GetGuaranteedNumberOfVideoEncoderInstances, _trt__GetGuaranteedNumberOfVideoEncoderInstancesResponse *trt__GetGuaranteedNumberOfVideoEncoderInstancesResponse){return SOAP_OK;};
 
 	/// Web service operation 'GetStreamUri' (returns error code or SOAP_OK)
-    virtual	int GetStreamUri(_trt__GetStreamUri *trt__GetStreamUri, _trt__GetStreamUriResponse *trt__GetStreamUriResponse){return SOAP_OK;};
+    virtual	int GetStreamUri(_trt__GetStreamUri *trt__GetStreamUri, _trt__GetStreamUriResponse *trt__GetStreamUriResponse);
 
 	/// Web service operation 'StartMulticastStreaming' (returns error code or SOAP_OK)
     virtual	int StartMulticastStreaming(_trt__StartMulticastStreaming *trt__StartMulticastStreaming, _trt__StartMulticastStreamingResponse *trt__StartMulticastStreamingResponse){return SOAP_OK;};
@@ -225,8 +230,7 @@ public:
     virtual	int SetSynchronizationPoint(_trt__SetSynchronizationPoint *trt__SetSynchronizationPoint, _trt__SetSynchronizationPointResponse *trt__SetSynchronizationPointResponse){return SOAP_OK;};
 
 	/// Web service operation 'GetSnapshotUri' (returns error code or SOAP_OK)
-    virtual	int GetSnapshotUri(_trt__GetSnapshotUri *trt__GetSnapshotUri, _trt__GetSnapshotUriResponse *trt__GetSnapshotUriResponse){return SOAP_OK;};
+    virtual	int GetSnapshotUri(_trt__GetSnapshotUri *trt__GetSnapshotUri, _trt__GetSnapshotUriResponse *trt__GetSnapshotUriResponse);
 
 };
-} // namespace Web
 #endif // soapMediaBindingServiceImpl_H

@@ -9,7 +9,7 @@ public:
     //===DEV==============================
     virtual int GetDateAndTime( /*out*/ DevGetSystemDateAndTimeResponse & );
     virtual int SetDateAndTime( DevSetSystemDateAndTime & ){ return -1; }
-    virtual int GetUsers( /*out*/ DevGetUsersResponse & ){ return -1; }
+    virtual int GetUsers( /*out*/ DevGetUsersResponse & );
     //===DEVIO============================
     virtual int GetVideoOutputs( /*out*/ DevIOGetVideoOutputsResponse & ){ return -1; }
     //===DISP=============================

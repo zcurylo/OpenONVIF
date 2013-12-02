@@ -3,7 +3,6 @@
 
 #include "WebRecordingBindingService.h"
 class BaseServer;
-namespace Web {
 class RecordingServiceImpl : public RecordingBindingService
 {
 private:
@@ -73,5 +72,4 @@ public:
 
 
 };
-} // namespace Web
 #endif // RecordingServiceImpl_H

@@ -2,7 +2,6 @@
 #include "DeviceServiceImpl.h"
 #include "BaseServer.h"
 
-namespace Web {
 int DeviceServiceImpl::GetSystemDateAndTime(_tds__GetSystemDateAndTime *tds__GetSystemDateAndTime, _tds__GetSystemDateAndTimeResponse *tds__GetSystemDateAndTimeResponse)
 {
 	DevGetSystemDateAndTimeResponse dt(tds__GetSystemDateAndTimeResponse);
@@ -36,8 +35,12 @@ int DeviceServiceImpl::SetSystemDateAndTime(_tds__SetSystemDateAndTime *tds__Set
 int DeviceServiceImpl::GetCapabilities(_tds__GetCapabilities *tds__GetCapabilities, _tds__GetCapabilitiesResponse *tds__GetCapabilitiesResponse)
 {
 	DevGetCapabilitiesResponse resp(tds__GetCapabilitiesResponse);
-	
-	resp.SetCapsDevice(OnvifDeviceServiceXAddr);
+    resp.SetDeviceCapabilities( m_pBaseServer->m_endpoint );
+    if( m_pBaseServer->m_deviceType == OnvifDevice::NVT ) {
+        resp.SetEventsCapabilities( m_pBaseServer->m_endpoint );
+        resp.SetMediaCapabilities( m_pBaseServer->m_endpoint );
+        resp.SetAnalyticsCapabilities( m_pBaseServer->m_endpoint );
+    }
 	
 	return SOAP_OK;
 }
@@ -46,8 +49,8 @@ int DeviceServiceImpl::GetDeviceInformation(_tds__GetDeviceInformation *tds__Get
 {
 	DevGetDeviceInformationResponse resp(tds__GetDeviceInformationResponse);
 	
-	resp.SetDeviceInfo(std::string(OnvifManufacturer), std::string(OnvifModel), 
-						std::string(OnvifFirmwareVersion), std::string(OnvifSerialNumber), std::string(OnvifHardwareId));
+    resp.SetDeviceInfo( m_pBaseServer->m_manufacturer, m_pBaseServer->m_model,
+                        m_pBaseServer->m_firmwareVersion, m_pBaseServer->m_serialNumber, m_pBaseServer->m_hardwareId );
 
 	return SOAP_OK;
 }
@@ -64,17 +67,19 @@ int DeviceServiceImpl::GetUsers(_tds__GetUsers *tds__GetUsers, _tds__GetUsersRes
 int DeviceServiceImpl::GetServices(_tds__GetServices *tds__GetServices, _tds__GetServicesResponse *tds__GetServicesResponse)
 {
 	DevGetServices req(tds__GetServices);
-	DevGetServicesResponse resp(tds__GetServicesResponse);
+    DevGetServicesResponse resp(tds__GetServicesResponse);
 
+    if( req.d->IncludeCapability )
+        SIGRLOG(SIGRWARNING, "DeviceServiceImpl::GetServices 'Including Capabilities' still not implemented");
 
-	if(req.d->IncludeCapability)
-		SIGRLOG(SIGRWARNING, "DeviceServiceImpl::GetServices 'Including Capabilities' still not implemented");
-
-	std::string strNameSpace("dev");
-	std::string xaddr("192.168.10.23");
-	resp.AddService(strNameSpace, xaddr);
-	
-
+    resp.AddService( "http://www.onvif.org/ver10/events/wsdl",  m_pBaseServer->m_endpoint );
 	return 0;	
 }
-} // namespace Web
+
+int DeviceServiceImpl::GetScopes(_tds__GetScopes *tds__GetScopes, _tds__GetScopesResponse *tds__GetScopesResponse)
+{
+    DevGetScopesResponse resp(tds__GetScopesResponse);
+    resp.AddItems( m_pBaseServer->m_scopes );
+    return SOAP_OK;
+}
+

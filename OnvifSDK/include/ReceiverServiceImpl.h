@@ -4,7 +4,6 @@
 #include "WebReceiverBindingService.h"
 class BaseServer;
 
-namespace Web {
 class ReceiverServiceImpl : public ReceiverBindingService
 {
 private:
@@ -41,5 +40,4 @@ public:
 	/// Web service operation 'GetReceiverState' (returns error code or SOAP_OK)
 	virtual	int GetReceiverState(_trv__GetReceiverState *trv__GetReceiverState, _trv__GetReceiverStateResponse *trv__GetReceiverStateResponse) {return SOAP_OK;};
 };
-} // namespace Web
 #endif // WebReceiverBindingServiceImpl_H

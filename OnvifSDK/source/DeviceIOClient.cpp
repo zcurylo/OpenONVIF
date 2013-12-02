@@ -1,7 +1,6 @@
 
 #include "DeviceIOClient.h"
 
-namespace Web {
 DeviceIOClient::DeviceIOClient(const char * pchAdress, soap * s):m_proxy(s)
 {
 	m_proxy.soap_endpoint = pchAdress;
@@ -20,4 +19,3 @@ int DeviceIOClient::GetVideoOutputs(DevIOGetVideoOutputsResponse & resp)
 	
 	CHECKRETURN(nRes, "DeviceIOClient::GetVideoOutputs");
 }
-} // namespace Web

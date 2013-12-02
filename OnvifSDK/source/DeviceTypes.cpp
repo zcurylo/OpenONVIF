@@ -3,7 +3,6 @@
 #include "commonTypes.h"
 #include "WebDeviceBindingProxy.h"
 
-namespace Web {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -220,25 +219,45 @@ CLASS_CTORS(tds, Dev, GetCapabilities)
 
 #define EXTRA_CONSTRUCT() \
 {\
-    this->d->Capabilities = soap_new_tt__Capabilities(this->d->soap,-1);\
-    this->d->Capabilities->Device = soap_new_tt__DeviceCapabilities(this->d->soap,-1);\
+    d->Capabilities = soap_new_tt__Capabilities( d->soap, -1 ); \
+    d->Capabilities->Device = soap_new_tt__DeviceCapabilities( d->soap, -1 ); \
+    d->Capabilities->Events = soap_new_tt__EventCapabilities( d->soap, -1 ); \
+    d->Capabilities->Media =  soap_new_tt__MediaCapabilities( d->soap, -1 ); \
+    d->Capabilities->Media->StreamingCapabilities = \
+         soap_new_tt__RealTimeStreamingCapabilities( d->soap, -1); \
+    d->Capabilities->Analytics = soap_new_tt__AnalyticsCapabilities( d->soap, -1 ); \
 }
 
 CLASS_CTORS(tds, Dev, GetCapabilitiesResponse)
 
 
-int DevGetCapabilitiesResponse::SetCapsDevice(std::string xaddr)
+int DevGetCapabilitiesResponse::SetDeviceCapabilities(const std::string & xaddr)
 {
 	this->d->Capabilities->Device->XAddr = xaddr;
 
 	return 0;
 }
 
-int DevGetCapabilitiesResponse::GetCapsDevice(std::string & xaddr) const
+int DevGetCapabilitiesResponse::SetEventsCapabilities(const std::string & xaddr)
 {
-	xaddr = this->d->Capabilities->Device->XAddr;
+    this->d->Capabilities->Events->XAddr = xaddr;
+    this->d->Capabilities->Events->WSSubscriptionPolicySupport = false;
+    this->d->Capabilities->Events->WSPullPointSupport = false;
+    this->d->Capabilities->Events->WSPausableSubscriptionManagerInterfaceSupport = false;
+    return 0;
+}
 
-	return 0;
+int DevGetCapabilitiesResponse::SetMediaCapabilities(const std::string & xaddr) {
+    this->d->Capabilities->Media->XAddr = xaddr;
+    this->d->Capabilities->Media->StreamingCapabilities->RTPMulticast = false;
+    return 0;
+}
+
+int DevGetCapabilitiesResponse::SetAnalyticsCapabilities(const std::string & xaddr) {
+    d->Capabilities->Analytics->XAddr = xaddr;
+    d->Capabilities->Analytics->AnalyticsModuleSupport = true;
+    d->Capabilities->Analytics->RuleSupport = false;
+    return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,16 +279,35 @@ CLASS_CTORS(tds, Dev, GetServices)
 
 CLASS_CTORS(tds, Dev, GetServicesResponse)
 
+int
+DevGetServicesResponse::AddService( const std::string & nameSpace,
+                                    const std::string & xaddr) {
+    d->Service.push_back( soap_new_tds__Service(this->d->soap) );
+    d->Service.back()->Namespace = nameSpace;
+    d->Service.back()->XAddr = xaddr;
 
-int DevGetServicesResponse::AddService(std::string & nameSpace, std::string & xaddr)
-{
-	tds__Service * pServiceEntry = soap_new_tds__Service(this->d->soap);
-	pServiceEntry->Namespace = nameSpace;
-	pServiceEntry->XAddr = xaddr;
-	this->d->Service.push_back(pServiceEntry);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+#define EXTRA_CONSTRUCT() \
+{\
 }
 
+CLASS_CTORS(tds, Dev, GetScopes)
+CLASS_CTORS(tds, Dev, GetScopesResponse)
+
+int
+DevGetScopesResponse::AddItems( const std::vector<std::string> & scopes ) {
+    for( std::vector<std::string>::const_iterator it = scopes.begin();
+         it != scopes.end(); ++it ) {
+        this->d->Scopes.push_back( soap_new_tt__Scope(this->d->soap) );
+        this->d->Scopes.back()->ScopeDef = tt__ScopeDefinition__Configurable;
+        this->d->Scopes.back()->ScopeItem = *it;
+    }
+    return 0;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-} // namespace Web

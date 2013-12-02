@@ -26,6 +26,8 @@ struct soap;
     } nullptr = {};                     // and whose name is nullptr
 #endif
 
+std::string randUuid(soap * soap);
+
 class Exception : public std::exception
 {
 public:

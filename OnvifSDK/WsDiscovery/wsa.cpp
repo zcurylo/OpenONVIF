@@ -63,40 +63,6 @@ uint & Wsa::messageNumber()
     return rv;
 }
 
-std::string Wsa::randUuid()
-{
-    char rv[48];
-    int r1, r2, r3, r4;
-#ifdef WITH_OPENSSL
-    r1 = soap_random;
-    r2 = soap_random;
-#else
-    static int k = 0xFACEB00B;
-    int lo = k % 127773;
-    int hi = k / 127773;
-# ifdef HAVE_GETTIMEOFDAY
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    r1 = 10000000 * tv.tv_sec + tv.tv_usec;
-#else
-    r1 = (int)time(NULL);
-# endif
-    k = 16807 * lo - 2836 * hi;
-    if (k <= 0)
-        k += 0x7FFFFFFF;
-    r2 = k;
-    k &= 0x8FFFFFFF;
-    r2 += *(int*)soap_->buf;
-#endif
-    r3 = soap_random;
-    r4 = soap_random;
-    sprintf(rv, "uuid:%8.8x-%4.4hx-4%3.3hx-%4.4hx-%4.4hx%8.8x",
-            r1, (short)(r2 >> 16), (short)r2 >> 4,
-            ((short)(r3 >> 16) & 0x3FFF) | 0x8000, (short)r3, r4);
-
-    return rv;
-}
-
 int Wsa::allocHeader()
 {
     soap_header(soap_);
@@ -108,7 +74,7 @@ int Wsa::allocHeader()
 
 int Wsa::check() const
 {
-    if (soap_->header == NULL || soap_->header->SOAP_WSA(Action).empty())
+    if (soap_->header == NULL || soap_->header->SOAP_WSA(Action) == NULL || strcmp(soap_->header->SOAP_WSA(Action), "") == 0 )
         return wsaError(soap_, wsa__FaultSubcodeValues__wsa__MessageInformationHeaderRequired);
 
     return SOAP_OK;
@@ -265,17 +231,30 @@ int Wsa::reply(const std::string & id, const std::string & action)
     return SOAP_OK;
 }
 
+void Wsa::setWsaString(char** pchWsaString, const std::string & value) {
+    *pchWsaString = (char *)soap_malloc(soap_, value.size());
+    strcpy( *pchWsaString, value.c_str() );
+}
 
 int Wsa::request(const std::string & to, const std::string & action)
 {
     if (allocHeader() != 0)
         return soap_->error;
-    soap_->header->SOAP_WSA(MessageID) = randUuid();
-    soap_->header->SOAP_WSA(To) = to.empty() ? ANONYMOUS_URI : to;
-    soap_->header->SOAP_WSA(Action) = action;
+    
+    setWsaString( &soap_->header->SOAP_WSA(MessageID), randUuid(soap_) );
+    setWsaString( &soap_->header->SOAP_WSA(To), to.empty() ? ANONYMOUS_URI : to );
+    setWsaString( &soap_->header->SOAP_WSA(Action), action);
+    
     soap_->header->SOAP_WSA(RelatesTo) = NULL;
     soap_->header->SOAP_WSA(From) = NULL;
     soap_->header->SOAP_WSA(ReplyTo) = NULL;
     soap_->header->SOAP_WSA(FaultTo) = NULL;
+    soap_->header->wsa5__MessageID = NULL;        
+    soap_->header->wsa5__RelatesTo = NULL;
+    soap_->header->wsa5__From = NULL;
+    soap_->header->wsa5__ReplyTo = NULL;
+    soap_->header->wsa5__FaultTo = NULL;
+    soap_->header->wsa5__To = NULL;
+    soap_->header->wsa5__Action = NULL;
     return check();
 }

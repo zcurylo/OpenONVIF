@@ -2,11 +2,10 @@
 #include "DisplayServiceImpl.h"
 #include "BaseServer.h"
 
-namespace Web {
 DisplayBindingService *DisplayServiceImpl::copy()
 {
 	return NULL;
-};
+}
 
 int DisplayServiceImpl::GetLayout(_tls__GetLayout *tls__GetLayout, _tls__GetLayoutResponse *tls__GetLayoutResponse)
 {
@@ -22,7 +21,7 @@ int DisplayServiceImpl::GetLayout(_tls__GetLayout *tls__GetLayout, _tls__GetLayo
 
 
 	CHECKRETURN(iRet, "DisplayServiceImpl::GetLayout");
-};
+}
 
 int DisplayServiceImpl::GetDisplayOptions(_tls__GetDisplayOptions *tls__GetDisplayOptions, _tls__GetDisplayOptionsResponse *tls__GetDisplayOptionsResponse)
 {
@@ -56,4 +55,3 @@ int DisplayServiceImpl::CreatePaneConfiguration(_tls__CreatePaneConfiguration *t
        // FIXME NO RESP SETTING
     CHECKRETURN(iRet, "DisplayServiceImpl::CreatePaneConfiguration");
 }
-} // namespace Web
