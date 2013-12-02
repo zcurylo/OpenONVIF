@@ -24,9 +24,9 @@ include_directories(${PROJECT_SOURCE_DIR}/../../common
 
 set(${HEADERS} ${PROJECT_SOURCE_DIR}/../../OnvifSDK/include/OnvifSDK.h)
 
-set(SOURCES 
+set(SOURCES
 	${PROJECT_SOURCE_DIR}/mainClient.cpp)
-							
+
 add_executable(OnvifTestClient  ${SOURCES} 			${HEADERS})
 target_link_libraries(OnvifTestClient ${SDKLIB} pthread)
 

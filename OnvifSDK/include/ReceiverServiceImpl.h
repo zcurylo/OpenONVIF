@@ -13,7 +13,7 @@ public:
 	{
         m_pBaseServer = pBaseServer;
 	};
-	
+
 	virtual	ReceiverBindingService *copy();
 
     /// Web service operation 'GetServiceCapabilities' (returns error code or SOAP_OK)

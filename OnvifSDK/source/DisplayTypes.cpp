@@ -37,7 +37,7 @@ CLASS_CTORS(tls, Disp, GetLayoutResponse)
 int DispGetLayoutResponse::SetLayout(const std::string & str)
 {
 	tt__PaneLayout * paneLayout = soap_new_tt__PaneLayout(this->d->soap);
-	
+
 	paneLayout->Pane = str.c_str();
 	paneLayout->Area = soap_new_tt__Rectangle(this->d->soap);
 	paneLayout->Area->bottom = new float(0.0f);
@@ -46,7 +46,7 @@ int DispGetLayoutResponse::SetLayout(const std::string & str)
 	paneLayout->Area->right = new float(1.0f);
 
 	this->d->Layout->PaneLayout.push_back(paneLayout);
-	
+
 	return 0;
 }
 

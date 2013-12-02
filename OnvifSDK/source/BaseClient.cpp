@@ -50,7 +50,7 @@ int BaseClient::Init(const char* pchEndpoint)
     m_pDevIOClient = new DeviceIOClient (pchEndpoint, m_pSoap);
     m_pDispClient = new DisplayClient (pchEndpoint, m_pSoap);
     m_pRecvClient = new ReceiverClient (pchEndpoint, m_pSoap);
-    m_pRecordingClient = new RecordingClient (pchEndpoint, m_pSoap);    
+    m_pRecordingClient = new RecordingClient (pchEndpoint, m_pSoap);
     m_pNotsConsumer = new NotificationConsumer(pchEndpoint, m_pSoap);
 
     if(m_pNotsConsumer && !m_pNotsConsumer->init()) {

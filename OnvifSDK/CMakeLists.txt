@@ -24,7 +24,7 @@ message(STATUS "The GSOAP version: ${GSOAP_VERSION}")
 message(STATUS "The GSOAP include directory: ${GSOAP_INCLUDE_DIR}")
 message(STATUS "The GSOAP libraries: ${GSOAP_LIBRARIES}")
 message(STATUS "The GSOAP import directory: ${GSOAP_IMPORT_DIR}")
-message(STATUS "The GSOAP plugin directory: ${GSOAP_PLUGIN_DIR}") 
+message(STATUS "The GSOAP plugin directory: ${GSOAP_PLUGIN_DIR}")
 
 add_definitions(-DWITH_PURE_VIRTUAL)
 add_definitions(-DWITH_NONAMESPACES)
@@ -56,7 +56,7 @@ if(NOT IS_DIRECTORY ${OSDK_GEN_SOURCE_DIR})
         COMMAND ln -s ${GSOAP_IMPORT_DIR}/soap12.h soap12.h
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     )
-    
+
     file(APPEND ${PROJECT_BINARY_DIR}/web.h
         "struct SOAP_ENV__Header {\n"
         "char*            wsa__MessageID 0;"
@@ -93,7 +93,7 @@ if(NOT IS_DIRECTORY ${OSDK_GEN_SOURCE_DIR})
         ${PROJECT_BINARY_DIR}/src/WebRemoteDiscoveryBindingProxy.cpp
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
     )
-    # hack to support visibility of header fields    
+    # hack to support visibility of header fields
     execute_process(
         COMMAND sed -i "/struct SOAP_ENV__Header/i \ class wsa__EndpointReferenceType; \ class wsa__Relationship;"
         ${PROJECT_BINARY_DIR}/src/WebStub.h
@@ -111,12 +111,12 @@ endif()
 # list project files
 include_directories(${PROJECT_SOURCE_DIR}/../common
                     ${PROJECT_SOURCE_DIR}/gen/include
-                    ${PROJECT_SOURCE_DIR}/include                    
+                    ${PROJECT_SOURCE_DIR}/include
                     ${PROJECT_SOURCE_DIR}/Eventing
                     ${PROJECT_SOURCE_DIR}/WsDiscovery
                     ${OSDK_GEN_SOURCE_DIR}
                     ${PROJECT_BINARY_DIR})
-                
+
 
 set(HEADERS
     ${PROJECT_SOURCE_DIR}/../common/sigrlog.h

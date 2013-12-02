@@ -9,7 +9,7 @@
     * Then log received Event Notifications
 ### prerequisites ###
 * build OnvifSDK
- 
+
 ### build ###
 mkdir OnvifClient-build
 cd OnvifClient-build
@@ -17,4 +17,4 @@ cmake ../OnvifClient -DSDK="../../path/to/OnvifSDK-build"
 make
 
 ### run ###
-./OnvifTestClient 
+./OnvifTestClient

@@ -6,7 +6,7 @@
   and exposes device for the WS-Discovery in current network segment
 ### prerequisites ###
 * build OnvifSDK
- 
+
 ### build ###
 mkdir OnvifServer-build
 cd OnvifServer-build
@@ -14,5 +14,5 @@ cmake ../OnvifServer -DSDK="../../path/to/OnvifSDK-build"
 make
 
 ### run ###
-./OnvifTestServer 
+./OnvifTestServer
 

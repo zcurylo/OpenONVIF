@@ -22,7 +22,7 @@ void deleteOnvifServer(IOnvifServer* obj) {
     BaseServer::deleteObject(obj);
 }
 
-BaseServer::BaseServer():    
+BaseServer::BaseServer():
     m_pSoap(soap_new())
 {
 }

@@ -25,7 +25,7 @@ include_directories(${PROJECT_SOURCE_DIR}/../../common
 
 
 set(INC ${PROJECT_SOURCE_DIR}/../../OnvifSDK/include/OnvifSDK.h
-        ${PROJECT_SOURCE_DIR}/../../common/sigrlog.h)	
+        ${PROJECT_SOURCE_DIR}/../../common/sigrlog.h)
 
 file( GLOB HEADERS ${PROJECT_SOURCE_DIR}/*.h )
 file( GLOB SOURCES ${PROJECT_SOURCE_DIR}/*.cpp )

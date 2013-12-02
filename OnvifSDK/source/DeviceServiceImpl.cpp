@@ -8,7 +8,7 @@ int DeviceServiceImpl::GetSystemDateAndTime(_tds__GetSystemDateAndTime *tds__Get
 
     int nRes = m_pBaseServer->GetDateAndTime(dt);
 
-	CHECKRETURN(nRes, "DeviceServiceImpl::GetSystemDateAndTime");	
+	CHECKRETURN(nRes, "DeviceServiceImpl::GetSystemDateAndTime");
 };
 
 // for while not supporting copy
@@ -41,14 +41,14 @@ int DeviceServiceImpl::GetCapabilities(_tds__GetCapabilities *tds__GetCapabiliti
         resp.SetMediaCapabilities( m_pBaseServer->m_endpoint );
         resp.SetAnalyticsCapabilities( m_pBaseServer->m_endpoint );
     }
-	
+
 	return SOAP_OK;
 }
 
 int DeviceServiceImpl::GetDeviceInformation(_tds__GetDeviceInformation *tds__GetDeviceInformation, _tds__GetDeviceInformationResponse *tds__GetDeviceInformationResponse)
 {
 	DevGetDeviceInformationResponse resp(tds__GetDeviceInformationResponse);
-	
+
     resp.SetDeviceInfo( m_pBaseServer->m_manufacturer, m_pBaseServer->m_model,
                         m_pBaseServer->m_firmwareVersion, m_pBaseServer->m_serialNumber, m_pBaseServer->m_hardwareId );
 
@@ -73,7 +73,7 @@ int DeviceServiceImpl::GetServices(_tds__GetServices *tds__GetServices, _tds__Ge
         SIGRLOG(SIGRWARNING, "DeviceServiceImpl::GetServices 'Including Capabilities' still not implemented");
 
     resp.AddService( "http://www.onvif.org/ver10/events/wsdl",  m_pBaseServer->m_endpoint );
-	return 0;	
+	return 0;
 }
 
 int DeviceServiceImpl::GetScopes(_tds__GetScopes *tds__GetScopes, _tds__GetScopesResponse *tds__GetScopesResponse)
