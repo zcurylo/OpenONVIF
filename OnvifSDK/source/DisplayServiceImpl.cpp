@@ -1,5 +1,7 @@
-#include "sigrlog.h"
+
 #include "DisplayServiceImpl.h"
+#ifdef DEVIO_S
+#include "sigrlog.h"
 #include "BaseServer.h"
 
 DisplayBindingService *DisplayServiceImpl::copy()
@@ -16,8 +18,8 @@ int DisplayServiceImpl::GetLayout(_tls__GetLayout *tls__GetLayout, _tls__GetLayo
 	std::string requestedLayoutToken;
 	req.GetLayout(requestedLayoutToken);
 
-
-    int iRet = m_pBaseServer->GetLayout(requestedLayoutToken, resp);
+	
+    int iRet = handler_->GetLayout(requestedLayoutToken, resp);
 
 
 	CHECKRETURN(iRet, "DisplayServiceImpl::GetLayout");
@@ -31,7 +33,7 @@ int DisplayServiceImpl::GetDisplayOptions(_tls__GetDisplayOptions *tls__GetDispl
 	std::string VOToken;
 	req.GetVO(VOToken);
 
-    int iRet = m_pBaseServer->GetDisplayOptions(VOToken, resp);
+    int iRet = handler_->GetDisplayOptions(VOToken, resp);
 
 	CHECKRETURN(iRet, "DisplayServiceImpl::GetDisplayOptions");
 }
@@ -40,7 +42,7 @@ int DisplayServiceImpl::SetLayout(_tls__SetLayout *tls__SetLayout, _tls__SetLayo
 {
     DispSetLayout req(tls__SetLayout);
 
-    int iRet = m_pBaseServer->SetLayout(req);
+    int iRet = handler_->SetLayout(req);
 
     CHECKRETURN(iRet, "DisplayServiceImpl::SetLayout");
 }
@@ -50,8 +52,9 @@ int DisplayServiceImpl::CreatePaneConfiguration(_tls__CreatePaneConfiguration *t
     DispCreatePaneConfiguration req(tls__CreatePaneConfiguration);
     DispCreatePaneConfigurationResponse resp(tls__CreatePaneConfigurationResponse);
 
-    int iRet = m_pBaseServer->CreatePaneConfiguration(req, resp);
+    int iRet = handler_->CreatePaneConfiguration(req, resp);
 
        // FIXME NO RESP SETTING
     CHECKRETURN(iRet, "DisplayServiceImpl::CreatePaneConfiguration");
 }
+#endif //DEVIO_S

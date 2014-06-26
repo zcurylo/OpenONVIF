@@ -30,7 +30,7 @@ public:
 
     static uint & instanceId();
     static std::string & sequenceId();
-    static uint & messageNumber();
+    static uint & messageNumber();    
 
     int allocHeader();
     int check() const;

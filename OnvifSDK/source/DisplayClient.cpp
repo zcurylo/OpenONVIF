@@ -1,6 +1,7 @@
 
 #include "DisplayClient.h"
 
+#ifdef DISP_S
 
 DisplayClient::DisplayClient(const char * pchAdress, soap * s):m_proxy(s)
 {
@@ -9,7 +10,7 @@ DisplayClient::DisplayClient(const char * pchAdress, soap * s):m_proxy(s)
 
 DisplayClient::~DisplayClient()
 {
-
+	
 }
 
 int DisplayClient::GetLayout(DispGetLayout & req, DispGetLayoutResponse & resp)
@@ -41,3 +42,5 @@ int DisplayClient::CreatePaneConfiguration(DispCreatePaneConfiguration & req, Di
 
     CHECKRETURN(nRes, "DisplayClient::CreatePaneConfiguration");
 }
+
+#endif // DISP_S

@@ -3,7 +3,7 @@
 #include "OnvifSDK.h"
 
 void notsCatcher( const char * msgText) {
-    printf("Client code got the Event message: [%s]", msgText);
+    printf("Client code got the Event message: [%s]\n", msgText);
 }
 
 int main(const int argc, const char* argv[])
@@ -25,8 +25,9 @@ int main(const int argc, const char* argv[])
     }
 
     soap* pSoap = pClient->GetSoap();
+    IOnvifDevMgmt* devMgmt = pClient->getDeviceClient();
     DevGetSystemDateAndTimeResponse r(pSoap);
-    int iRet = pClient->GetDateAndTime(r);
+    int iRet = devMgmt->GetDateAndTime(r);
     if(iRet != 0) {
         printf("GetDateAndTime failed\n");
         return -1;
@@ -39,6 +40,6 @@ int main(const int argc, const char* argv[])
     pClient->Subscribe();
 
     sleep(15);
-    return 0;
+    return 0; 
 }
 

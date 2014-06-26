@@ -22,7 +22,7 @@ DeviceInfoStorage::getInterfaceIp( const std::string & interface ) {
             tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
             char addressBuffer[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-            SIGRLOG( SIGRDEBUG2, "%s IP Address %s", ifa->ifa_name, addressBuffer);
+            SIGRLOG( SIGRDEBUG3, "%s IP Address %s", ifa->ifa_name, addressBuffer);
             if(! strcmp(ifa->ifa_name, interface.c_str()))
                 result = std::string(addressBuffer);
         } else if (ifa->ifa_addr->sa_family==AF_INET6) { // check it is IP6
@@ -30,7 +30,7 @@ DeviceInfoStorage::getInterfaceIp( const std::string & interface ) {
             tmpAddrPtr=&((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
             char addressBuffer[INET6_ADDRSTRLEN];
             inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-            SIGRLOG( SIGRDEBUG2, "%s IP Address %s", ifa->ifa_name, addressBuffer);
+            SIGRLOG( SIGRDEBUG3, "%s IP Address %s", ifa->ifa_name, addressBuffer);
             if( ( !strcmp(ifa->ifa_name, interface.c_str()) ) && result.empty() )
                 result = std::string(addressBuffer);
         }

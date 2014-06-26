@@ -76,3 +76,12 @@ int EventingServiceImpl::Notify(_wsnt__Notify *wsnt__Notify) {
     return SOAP_OK;
 }
 
+int EventingServiceImpl::Renew( _wsnt__Renew *wsnt__Renew,
+                                _wsnt__RenewResponse *wsnt__RenewResponse) {
+    SIGRLOG( SIGRDEBUG2, "EventingServiceImpl::Renew %s\n", wsnt__Renew->TerminationTime->c_str() );
+    time_t current = time(0);
+    current += 1000000;
+    wsnt__RenewResponse->TerminationTime = current;
+    return SOAP_OK;
+}
+

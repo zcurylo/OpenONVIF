@@ -240,16 +240,16 @@ int Wsa::request(const std::string & to, const std::string & action)
 {
     if (allocHeader() != 0)
         return soap_->error;
-
+    
     setWsaString( &soap_->header->SOAP_WSA(MessageID), randUuid(soap_) );
     setWsaString( &soap_->header->SOAP_WSA(To), to.empty() ? ANONYMOUS_URI : to );
     setWsaString( &soap_->header->SOAP_WSA(Action), action);
-
+    
     soap_->header->SOAP_WSA(RelatesTo) = NULL;
     soap_->header->SOAP_WSA(From) = NULL;
     soap_->header->SOAP_WSA(ReplyTo) = NULL;
     soap_->header->SOAP_WSA(FaultTo) = NULL;
-    soap_->header->wsa5__MessageID = NULL;
+    soap_->header->wsa5__MessageID = NULL;        
     soap_->header->wsa5__RelatesTo = NULL;
     soap_->header->wsa5__From = NULL;
     soap_->header->wsa5__ReplyTo = NULL;

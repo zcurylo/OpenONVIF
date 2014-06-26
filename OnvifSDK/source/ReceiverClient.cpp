@@ -1,5 +1,5 @@
 #include "ReceiverClient.h"
-
+#ifdef RECV_S
 ReceiverClient::ReceiverClient(const char * pchAdress, soap * s):m_proxy(s)
 {
 	m_proxy.soap_endpoint = pchAdress;
@@ -13,7 +13,7 @@ ReceiverClient::~ReceiverClient()
 int ReceiverClient::GetReceivers(RecvGetReceiversResponse & resp)
 {
 	RecvGetReceivers req(m_proxy.soap);
-
+	
 	int nRes = m_proxy.GetReceivers(req.d, resp.d);
 
     CHECKRETURN(nRes, "ReceiverClient::GetReceivers");
@@ -45,3 +45,5 @@ int ReceiverClient::SetReceiverMode(const std::string & recvToken, bool bMode)
     int nRes = m_proxy.SetReceiverMode(req.d, resp.d);
     CHECKRETURN(nRes, "ReceiverClient::SetReceiverMode");
 }
+
+#endif //RECV_S

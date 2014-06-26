@@ -19,20 +19,20 @@ cd $SC_DIR/bin
 if [ ! -f "${SC_DIR}/bin/OnvifSDK-b/libOnvifSDK.a" ]; then
 	mkdir OnvifSDK-b
 	cd OnvifSDK-b
-	cmake ../../OnvifSDK || checkErr "OnvifSDK config failed"
+	cmake ../../OnvifSDK -DSIGRLOG_OUTPUT=1 -DDEVICE_TYPE=NVT || checkErr "OnvifSDK config failed"
 	make || checkErr "OnvifSDK make failed"
 	cd ..
 fi
 # dir for Client
 mkdir client
 cd client
-cmake ../../examples/OnvifClient -DSDKLIB="$SC_DIR/bin/OnvifSDK-b/libOnvifSDK.a" || checkErr "OnvifClient config failed"
+cmake ../../examples/OnvifClient -DSDK="$SC_DIR/bin/OnvifSDK-b" || checkErr "OnvifClient config failed"
 make || checkErr "OnvifClient make failed"
 cd ..
 # dir for Server
 mkdir server
 cd server
-cmake ../../examples/OnvifServer -DSDKLIB="$SC_DIR/bin/OnvifSDK-b/libOnvifSDK.a" || checkErr "OnvifServer config failed"
+cmake ../../examples/OnvifServer -DSDK="$SC_DIR/bin/OnvifSDK-b" || checkErr "OnvifServer config failed"
 make || checkErr "OnvifServer make failed"
 cd ../..
 

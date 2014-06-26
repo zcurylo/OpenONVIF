@@ -1,15 +1,21 @@
 #ifndef RecordingServiceImpl_H
 #define RecordingServiceImpl_H
 
+#include "OnvifSDK.h"
+#ifdef RECORD_S
 #include "WebRecordingBindingService.h"
 class BaseServer;
-class RecordingServiceImpl : public RecordingBindingService
-{
+class RecordingServiceImpl:
+        public RecordingBindingService {
 private:
-    BaseServer * m_pBaseServer;
+    BaseServer * baseServer_;
+    IOnvifRecording* handler_;
 public:
-    RecordingServiceImpl(BaseServer * pBaseServer, struct soap * pData):
-        m_pBaseServer(pBaseServer),
+    RecordingServiceImpl( BaseServer * baseServer,
+                          IOnvifRecording* handler
+                          struct soap * data ):
+        baseServer_(baseServer),
+        handler_(handler),
         RecordingBindingService(pData)
     {
     }
@@ -72,4 +78,5 @@ public:
 
 
 };
+#endif //RECORD_S
 #endif // RecordingServiceImpl_H

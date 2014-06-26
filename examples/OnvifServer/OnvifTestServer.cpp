@@ -3,7 +3,7 @@
 #include "sigrlog.h"
 #include "OnvifTestServer.h"
 
-int OnvifTestServer::GetDateAndTime(DevGetSystemDateAndTimeResponse & dt)
+int OnvifTestServer::GetDateAndTime(DevGetSystemDateAndTimeResponse & dt) 
 {
     time_t t = time(0);
     struct tm * now = localtime( & t );

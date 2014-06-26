@@ -1,18 +1,24 @@
 #ifndef WebDeviceIOBindingServiceImpl_H
 #define WebDeviceIOBindingServiceImpl_H
 
+#include "OnvifSDK.h"
+#ifdef DEVIO_S
+
 #include "WebDeviceIOBindingService.h"
 class BaseServer;
-
-class DeviceIOServiceImpl : public DeviceIOBindingService
-{
+class DeviceIOServiceImpl:
+        public DeviceIOBindingService {
 private:
-    BaseServer * m_pBaseServer;
+    BaseServer* baseServer_;
+    IOnvifDevIO* handler_;
 public:
-    DeviceIOServiceImpl(BaseServer * pBaseServer, struct soap * pData):DeviceIOBindingService(pData)
-	{
-        m_pBaseServer = pBaseServer;
-	};
+    DeviceIOServiceImpl( BaseServer * baseServer,
+                         IOnvifDevIO* handler,
+                         struct soap * data ):
+        baseServer_(baseServer),
+        handler_(handler),
+        DeviceIOBindingService(data) {
+    }
 
 	virtual DeviceIOBindingService* copy();
 
@@ -97,4 +103,6 @@ public:
 	/// Web service operation 'SendReceiveSerialCommand' (returns error code or SOAP_OK)
 	virtual	int SendReceiveSerialCommand(_tmd__SendReceiveSerialCommand *tmd__SendReceiveSerialCommand, _tmd__SendReceiveSerialCommandResponse *tmd__SendReceiveSerialCommandResponse) {return SOAP_OK;};
 };
+
+#endif //DEVIO_S
 #endif // WebDeviceIOBindingServiceImpl_H

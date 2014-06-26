@@ -1,8 +1,9 @@
 #ifndef RECORDINGCLIENT_H
 #define RECORDINGCLIENT_H
 
-#include "sigrlog.h"
 #include "OnvifSDK.h"
+#ifdef RECORD_S
+#include "sigrlog.h"
 #include "WebRecordingBindingProxy.h"
 
 class RecordingClient
@@ -19,4 +20,6 @@ public:
 private:
     RecordingBindingProxy m_proxy;
 };
-#endif	// RECORDINGCLIENT_H
+
+#endif //RECORD_S
+#endif // RECORDINGCLIENT_H

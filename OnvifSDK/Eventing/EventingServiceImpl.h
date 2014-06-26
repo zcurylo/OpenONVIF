@@ -57,7 +57,7 @@ class NotificationConsumer;
         virtual	int GetEventProperties(_tev__GetEventProperties *tev__GetEventProperties, _tev__GetEventPropertiesResponse *tev__GetEventPropertiesResponse);
 
         /// Web service operation 'Renew' (returns error code or SOAP_OK)
-        virtual	int Renew(_wsnt__Renew *wsnt__Renew, _wsnt__RenewResponse *wsnt__RenewResponse) { return SOAP_ERR; }
+        virtual	int Renew(_wsnt__Renew *wsnt__Renew, _wsnt__RenewResponse *wsnt__RenewResponse);
 
         /// Web service operation 'Unsubscribe' (returns error code or SOAP_OK)
         virtual	int Unsubscribe(_wsnt__Unsubscribe *wsnt__Unsubscribe, _wsnt__UnsubscribeResponse *wsnt__UnsubscribeResponse) { return SOAP_ERR; }

@@ -3,6 +3,8 @@
 
 #include "sigrlog.h"
 #include "OnvifSDK.h"
+#ifdef DEVIO_S
+
 #include "WebDeviceIOBindingProxy.h"
 
 class DeviceIOClient
@@ -16,4 +18,5 @@ public:
 private:
 	DeviceIOBindingProxy m_proxy;
 };
+#endif //DEVIO_S
 #endif	// DEVICEIOCLIENT_H

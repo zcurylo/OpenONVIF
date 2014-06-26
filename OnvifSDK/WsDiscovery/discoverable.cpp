@@ -11,6 +11,9 @@ Discoverable::Discoverable() :
 
 Discoverable::~Discoverable()
 {
+    SIGRLOG(SIGRDEBUG2, "Discoverable::~Discoverable");
+    stop();
+    pthread_mutex_destroy(&mutex_);
 }
 
 int Discoverable::start(bool bIsDevice, BaseServer *serv )
@@ -33,7 +36,7 @@ int Discoverable::stop()
 
 void Discoverable::hello(const Hello_t & arg)
 {
-    SIGRLOG( SIGRDEBUG2,  "hello ( %s, %s, %s)",
+    SIGRLOG( SIGRDEBUG3,  "hello ( %s, %s, %s)",
               (arg.xaddrs != NULL ? arg.xaddrs->c_str() : ""),
               (arg.types != NULL ?  arg.types->c_str() : ""),
               (arg.scopes != NULL ? arg.scopes->item.c_str() : ""));
@@ -48,7 +51,7 @@ void Discoverable::hello(const Hello_t & arg)
 
 void Discoverable::bye(const Bye_t & arg)
 {
-    SIGRLOG( SIGRDEBUG2,  "bye ( %s, %s, %s)",
+    SIGRLOG( SIGRDEBUG3,  "bye ( %s, %s, %s)",
               (arg.xaddrs != NULL ? arg.xaddrs->c_str() : ""),
               (arg.types != NULL ? arg.types->c_str() : ""),
               (arg.scopes != NULL ? arg.scopes->item.c_str() : ""));
@@ -56,7 +59,7 @@ void Discoverable::bye(const Bye_t & arg)
 
 Discoverable::ProbeMatches_t  Discoverable::probe(const Probe_t & arg)
 {
-    SIGRLOG( SIGRDEBUG2,  "probe ( %s, %s)",
+    SIGRLOG( SIGRDEBUG3,  "probe ( %s, %s)",
              (arg.types != NULL ? arg.types->c_str() : ""),
              (arg.scopes != NULL ? arg.scopes->item.c_str() : ""));
 

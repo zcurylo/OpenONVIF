@@ -3,6 +3,9 @@
 
 #include "sigrlog.h"
 #include "OnvifSDK.h"
+
+#ifdef DISP_S
+
 #include "WebDisplayBindingProxy.h"
 
 class DisplayClient
@@ -19,5 +22,7 @@ public:
 private:
 	DisplayBindingProxy m_proxy;
 };
-#endif	// DISPLAYCLIENT_H
+
+#endif // DISP_S
+#endif // DISPLAYCLIENT_H
 

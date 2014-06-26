@@ -1,17 +1,19 @@
 #ifndef ReplayServiceImpl_H
 #define ReplayServiceImpl_H
 
+#include "OnvifSDK.h"
+#ifdef REPLAY_S
+
 #include "WebReplayBindingService.h"
 class BaseServer;
-class ReplayServiceImpl : public ReplayBindingService
-{
+class ReplayServiceImpl:
+        public ReplayBindingService {
 private:
-    BaseServer * m_pBaseServer;
+    BaseServer * baseServer_;
 public:
-    ReplayServiceImpl(BaseServer * pBaseServer, struct soap * pData):
-        m_pBaseServer(pBaseServer),
-        ReplayBindingService(pData)
-    {
+    ReplayServiceImpl(BaseServer * baseServer, struct soap * data):
+        baseServer_(baseServer),
+        ReplayBindingService(data) {
     }
 
     virtual	ReplayBindingService *copy() { return NULL; }
@@ -30,4 +32,5 @@ public:
 
 
 };
+#endif //REPLAY_S
 #endif // ReplayServiceImpl

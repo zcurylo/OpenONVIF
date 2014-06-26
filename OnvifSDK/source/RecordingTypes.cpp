@@ -1,4 +1,6 @@
 #include "OnvifSDK.h"
+
+#ifdef RECORD_S
 #include "commonTypes.h"
 #include "WebRecordingBindingProxy.h"
 
@@ -87,3 +89,5 @@ RecDeleteRecordingJob::setToken (const std::string & str) { d->JobToken = str; }
 
 CLASS_CTORS(trc, Rec, DeleteRecordingJobResponse)
 /////////////////////////////////////////////////////////////////////////////////////
+
+#endif //RECORD_S

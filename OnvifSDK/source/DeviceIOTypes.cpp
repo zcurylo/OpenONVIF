@@ -1,5 +1,7 @@
-#include "sigrlog.h"
+
 #include "OnvifSDK.h"
+#ifdef DEVIO_S
+#include "sigrlog.h"
 #include "commonTypes.h"
 #include "WebDeviceIOBindingProxy.h"
 
@@ -26,7 +28,7 @@ CLASS_CTORS(tmd, DevIO, GetVideoOutputsResponse)
 int DevIOGetVideoOutputsResponse::SetVideoOutputs(const std::string & videoOutput)
 {
 	tt__VideoOutput * vo = soap_new_tt__VideoOutput(this->d->soap, -1);
-
+	
     vo->token = videoOutput;
 
     this->d->VideoOutputs.push_back(vo);
@@ -44,3 +46,4 @@ int DevIOGetVideoOutputsResponse::GetVideoOutputs(std::string & videoOutput) con
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+#endif //DEVIO_S

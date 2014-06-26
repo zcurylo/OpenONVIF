@@ -13,20 +13,25 @@ add_definitions(-DSIGRLOG_OUTPUT=1)
 # output filename for logger
 add_definitions(-DSIGRLOG_FILENAME=\"clientLog.ini\")
 
+if("${SDK}" STREQUAL "")
+    message(FATAL_ERROR "Set SDK variable. OnvifSDK library wasn't provided")
+endif()
+
 find_library(SDKLIB OnvifSDK ${SDK})
 if( SDKLIB STREQUAL "SDKLIB-NOTFOUND" )
-    message(FATAL_ERROR "OnvifSDK library wasn't provided")
+    message(FATAL_ERROR "OnvifSDK library wasn't found in ${SDK}")
 endif()
 message(STATUS "OSDK Library : ${SDKLIB}")
 
 include_directories(${PROJECT_SOURCE_DIR}/../../common
-                    ${PROJECT_SOURCE_DIR}/../../OnvifSDK/include)
+                    ${PROJECT_SOURCE_DIR}/../../OnvifSDK/include
+                	${SDK})
 
 set(${HEADERS} ${PROJECT_SOURCE_DIR}/../../OnvifSDK/include/OnvifSDK.h)
 
-set(SOURCES
+set(SOURCES 
 	${PROJECT_SOURCE_DIR}/mainClient.cpp)
-
-add_executable(OnvifTestClient  ${SOURCES} 			${HEADERS})
+							
+add_executable(OnvifTestClient ${SOURCES} ${HEADERS})
 target_link_libraries(OnvifTestClient ${SDKLIB} pthread)
 

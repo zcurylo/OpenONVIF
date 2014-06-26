@@ -5722,13 +5722,13 @@ http_post(struct soap *soap, const char *endpoint, const char *host, int port, c
 { register const char *s;
   register int err;
   switch (soap->status)
-  { case SOAP_GET:
+  { case SOAP_GET: 
       s = "GET";
       break;
-    case SOAP_PUT:
+    case SOAP_PUT: 
       s = "PUT";
       break;
-    case SOAP_DEL:
+    case SOAP_DEL: 
       s = "DELETE";
       break;
     case SOAP_CONNECT:
@@ -15458,7 +15458,7 @@ soap_ntlm_handshake(struct soap *soap, int command, const char *endpoint, const 
   const char *passwd = (soap->proxy_passwd ? soap->proxy_passwd : soap->passwd);
   struct SOAP_ENV__Header *oldheader;
   if (soap->ntlm_challenge && userid && passwd && soap->authrealm)
-  { tSmbNtlmAuthRequest req;
+  { tSmbNtlmAuthRequest req;  
     tSmbNtlmAuthResponse res;
     tSmbNtlmAuthChallenge ch;
     short k = soap->keep_alive;
@@ -16042,7 +16042,7 @@ soap_set_fault(struct soap *soap)
 #ifndef WITH_NOHTTP
 #ifndef WITH_LEAN
       if (soap->error > 200 && soap->error < 600)
-      {
+      { 
 #ifdef HAVE_SNPRINTF
         soap_snprintf(soap->msgbuf, sizeof(soap->msgbuf), "HTTP Error: %d %s", soap->error, http_error(soap, soap->error));
 #else

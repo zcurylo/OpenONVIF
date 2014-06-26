@@ -1,19 +1,25 @@
 #ifndef WebReceiverBindingServiceImpl_H
 #define WebReceiverBindingServiceImpl_H
 
+#include "OnvifSDK.h"
+#ifdef RECV_S
 #include "WebReceiverBindingService.h"
 class BaseServer;
 
 class ReceiverServiceImpl : public ReceiverBindingService
 {
 private:
-    BaseServer * m_pBaseServer;
+    BaseServer* baseServer_;
+    IOnvifReceiver* handler_;
 public:
-    ReceiverServiceImpl(BaseServer * pBaseServer, struct soap * pData):ReceiverBindingService(pData)
-	{
-        m_pBaseServer = pBaseServer;
-	};
-
+    ReceiverServiceImpl( BaseServer * baseServer,
+                         IOnvifReceiver* handler,
+                         struct soap * data):
+        baseServer_(baseServer),
+        handler_(handler),
+        ReceiverBindingService(data) {
+    }
+	
 	virtual	ReceiverBindingService *copy();
 
     /// Web service operation 'GetServiceCapabilities' (returns error code or SOAP_OK)
@@ -40,4 +46,5 @@ public:
 	/// Web service operation 'GetReceiverState' (returns error code or SOAP_OK)
 	virtual	int GetReceiverState(_trv__GetReceiverState *trv__GetReceiverState, _trv__GetReceiverStateResponse *trv__GetReceiverStateResponse) {return SOAP_OK;};
 };
+#endif // RECV_S
 #endif // WebReceiverBindingServiceImpl_H

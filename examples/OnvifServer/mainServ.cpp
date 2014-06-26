@@ -1,6 +1,7 @@
 
 #include <signal.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "OnvifSDK.h"
 #include "OnvifTestServer.h"
@@ -42,7 +43,13 @@ int main()
     if( !evEmm.run() )
         return -1;
 
-    if( srv->Init( DEV_S | EVNT_S, &handler) != 0 )
+    OnvifHandlers providedHandlers;
+    memset( providedHandlers.h_, 0, sizeof(providedHandlers.h_) );
+    providedHandlers.h_[OnvifService::DEV] = &handler;
+    providedHandlers.h_[OnvifService::EVNT] = &handler;
+
+
+    if( srv->Init( providedHandlers ) != 0 )
         return -1;
 
     if( srv->Run() != 0 )

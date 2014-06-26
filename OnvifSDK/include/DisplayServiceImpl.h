@@ -1,18 +1,24 @@
 #ifndef WebDisplayBindingServiceImpl_H
 #define WebDisplayBindingServiceImpl_H
+#include "OnvifSDK.h"
 
+#ifdef DEVIO_S
 #include "WebDisplayBindingService.h"
 class BaseServer;
 
 class DisplayServiceImpl : public DisplayBindingService
 {
 private:
-    BaseServer * m_pBaseServer;
+    BaseServer * baseServer_;
+    IOnvifDisplay* handler_;
 public:
-    DisplayServiceImpl(BaseServer * pBaseServer, struct soap* pData):DisplayBindingService(pData)
-	{
-        m_pBaseServer = pBaseServer;
-	};
+    DisplayServiceImpl( BaseServer * baseServer,
+                        IOnvifDisplay* handler,
+                        struct soap* data ):
+        baseServer_(baseServer),
+        handler_(handler),
+        DisplayBindingService(pData) {
+    }
 
 	virtual DisplayBindingService * copy();
 
@@ -47,5 +53,5 @@ public:
 	virtual	int DeletePaneConfiguration(_tls__DeletePaneConfiguration *tls__DeletePaneConfiguration, _tls__DeletePaneConfigurationResponse *tls__DeletePaneConfigurationResponse) {return SOAP_OK;};
 
 };
+#endif // DEVIO_S
 #endif // WebDisplayBindingServiceImpl_H
-

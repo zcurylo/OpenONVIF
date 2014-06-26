@@ -1,6 +1,9 @@
 #ifndef SearchServiceImpl_H
 #define SearchServiceImpl_H
 
+#include "OnvifSDK.h"
+
+#ifdef SEARCH_S
 #include "WebSearchBindingService.h"
 class BaseServer;
 class SearchServiceImpl : public SearchBindingService
@@ -58,4 +61,5 @@ public:
     /// Web service operation 'GetMetadataSearchResults' (returns error code or SOAP_OK)
     virtual	int GetMetadataSearchResults(_tse__GetMetadataSearchResults *tse__GetMetadataSearchResults, _tse__GetMetadataSearchResultsResponse *tse__GetMetadataSearchResultsResponse) { return SOAP_OK; }
 };
+#endif // SEARCH_S
 #endif // SearchServiceImpl

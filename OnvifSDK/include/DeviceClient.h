@@ -1,25 +1,26 @@
 #ifndef deviceClient_H
 #define deviceClient_H
 
-#include "sigrlog.h"
 #include "OnvifSDK.h"
+
+#ifdef DEV_S
+#include "sigrlog.h"
 #include "WebDeviceBindingProxy.h"
 
-class DeviceClient
-{
+class DeviceClient:
+        public IOnvifDevMgmt {
 public:
 	DeviceClient(const char * pchAdress, soap * s);
-	~DeviceClient();
+    virtual ~DeviceClient() {
+    }
 
-    int SetDateAndTime(const DevSetSystemDateAndTime &);
+    int SetDateAndTime( DevSetSystemDateAndTime & );
 	int GetDateAndTime(DevGetSystemDateAndTimeResponse &);
-	//int GetDeviceInfo(DevGetDeviceInformationResponse &);
-	//int GetCapabilities(DevGetCapabilitiesResponse &);
-	int GetUsers(DevGetUsersResponse &);
-	int GetServices(DevGetServicesResponse &);
+    int GetUsers(DevGetUsersResponse &);
 
 private:
 	DeviceBindingProxy m_proxy;
 };
+#endif //DEV_S
 #endif	// deviceClient_H
 

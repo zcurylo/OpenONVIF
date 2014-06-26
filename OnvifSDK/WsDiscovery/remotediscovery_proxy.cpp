@@ -116,7 +116,7 @@ public:
         if (Probe(&req, &resp ) != 0)
             throw SoapException(RemoteDiscoveryBindingProxy::soap);
 
-        SIGRLOG( SIGRDEBUG2, "resp.ProbeMatch.size() %d", resp.ProbeMatch.size());
+        SIGRLOG( SIGRDEBUG3, "resp.ProbeMatch.size() %d", resp.ProbeMatch.size());
 
         ProbeMatches_t matches;
         for( int i = 0; i < resp.ProbeMatch.size(); ++i )

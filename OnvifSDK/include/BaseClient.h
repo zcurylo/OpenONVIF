@@ -16,11 +16,10 @@
 #include "NotificationConsumer.h"
 
 
-class BaseClient: IOnvifClient
-{
+class BaseClient:
+    public IOnvifClient {
 public:
-    static IOnvifClient* Instance()
-    {
+    static IOnvifClient* Instance() {
         static BaseClient theSingleInstance;
         return &theSingleInstance;
     }
@@ -32,50 +31,49 @@ public:
     virtual bool SetNotificationCatcher(notificationCatcherFunc func);
     virtual soap* GetSoap();
 
-    //===DEV==============================
-    virtual int GetDateAndTime( /*out*/ DevGetSystemDateAndTimeResponse & );
-    virtual int SetDateAndTime( DevSetSystemDateAndTime & );
-    virtual int GetUsers( /*out*/ DevGetUsersResponse & );
-
-    //===DEVIO============================
-    virtual int GetVideoOutputs( /*out*/ DevIOGetVideoOutputsResponse & );
-
-    //===DISP=============================
-    virtual int GetLayout( std::string &, /*out*/ DispGetLayoutResponse & );
-    virtual int GetDisplayOptions( const std::string &, DispGetDisplayOptionsResponse & );
-    virtual int SetLayout( DispSetLayout &);
-    virtual int CreatePaneConfiguration( DispCreatePaneConfiguration &, /*out*/ DispCreatePaneConfigurationResponse & );
-
-    //===RECV=============================
-    virtual int GetReceivers( RecvGetReceiversResponse & );
-    virtual int CreateReceiver( const std::string & uri, /*out*/ std::string & recvToken );
-    virtual int SetReceiverMode( const std::string & recvToken, bool bMode );
-    //===RECORDING=========================
-    virtual int CreateRecording (RecCreateRecording &, RecCreateRecordingResponse &);
-    virtual int CreateRecordingJob (RecCreateRecordingJob &, RecCreateRecordingJobResponse &);
-    virtual int DeleteRecording (const std::string &);
-    virtual int DeleteRecordingJob (const std::string &);
-    //===MEDIA==============================
-    virtual int GetProfile(const std::string & profileToken, MedGetProfileResponse & resp){ return -1; }
-    virtual int GetProfiles(MedGetProfilesResponse &){ return -1; }
-    virtual int GetVideoSources(MedGetVideoSourcesResponse &){ return -1; }
-    virtual int GetStreamUri( const std::string& token, std::string & uri){ return -1; }
-    virtual int GetCompatibleVideoEncoderConfigurations(MedGetCompatibleVideoEncoderConfigurationsResponse& resp){ return -1; }
-    virtual int GetCompatibleVideoAnalyticsConfigurations(MedGetCompatibleVideoAnalyticsConfigurationsResponse& resp){ return -1; }
+#ifdef DEV_S
+    virtual IOnvifDevMgmt* getDeviceClient();
+#endif
+#ifdef DEVIO_S
+    virtual IOnvifDevIO* getDeviceIOClient();
+#endif
+#ifdef DISP_S
+    virtual IOnvifDisplay* getDisplayClient();
+#endif
+#ifdef RECV_S
+    virtual IOnvifReceiver* getReceiverClient();
+#endif
+#ifdef RECORD_S
+    virtual IOnvifRecording* getRecordingClient();
+#endif
 
 private:
     BaseClient();
     BaseClient(const BaseClient&);
     BaseClient& operator=(const BaseClient&);
 
-    soap* m_pSoap;
-    DeviceClient* m_pDevClient;
-    DeviceIOClient* m_pDevIOClient;
-    DisplayClient* m_pDispClient;
-    ReceiverClient* m_pRecvClient;
-    RecordingClient* m_pRecordingClient;
-    NotificationConsumer* m_pNotsConsumer;
-    Discoverer m_pWsdd;
+    soap* soap_;
+
+#ifdef DEV_S
+    DeviceClient* devClient_;
+#endif
+#ifdef DEVIO_S
+    DeviceIOClient* devIOClient_;
+#endif
+#ifdef DISP_S
+    DisplayClient* dispClient_;
+#endif
+#ifdef RECV_S
+    ReceiverClient* recvClient_;
+#endif
+#ifdef RECORD_S
+    RecordingClient* recordingClient_;
+#endif
+#ifdef EVNT_S
+    NotificationConsumer* notsConsumer_;
+#endif
+
+    Discoverer wsdd_;
 };
 
 #endif // BASE_CLIENT__H

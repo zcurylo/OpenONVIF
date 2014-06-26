@@ -8,7 +8,7 @@
 
 // need to set
 //
-//  SIGRLOG_CURRLEVEL		[0;4]
+//  SIGRLOG_CURRLEVEL		[0;5]
 //  SIGRLOG_OUTPUT			[1;3]
 //  SIGRLOG_FILENAME        "filename"
 
@@ -21,6 +21,7 @@ typedef enum _SigrLogLevel
 	SIGRDEBUG0 = 2,
 	SIGRDEBUG1 = 3,
 	SIGRDEBUG2 = 4,
+    SIGRDEBUG3 = 5,
 	SIGREND
 } SiglLogLevel;
 
@@ -52,7 +53,7 @@ static const char * loglevel [SIGREND] = {"CRITICAL", "WARNING", "DEBUG0","DEBUG
     			fclose(fp);\
     		}\
     	}\
-    }while(0)
+    }while(0) 
 
 #define CHECKRETURN(nRes, str) \
     do{\
@@ -67,6 +68,6 @@ static const char * loglevel [SIGREND] = {"CRITICAL", "WARNING", "DEBUG0","DEBUG
         return 0;\
     }\
     }while(0)
-
+    
 
 #endif // SIGRLOG_H

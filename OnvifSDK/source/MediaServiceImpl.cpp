@@ -7,7 +7,7 @@ MediaServiceImpl::GetStreamUri( _trt__GetStreamUri *trt__GetStreamUri,
                                 _trt__GetStreamUriResponse *trt__GetStreamUriResponse) {
 
     trt__GetStreamUriResponse->MediaUri = soap_new_tt__MediaUri( soap );
-    if( SOAP_OK != m_pBaseServer->GetStreamUri( trt__GetStreamUri->ProfileToken,
+    if( SOAP_OK != handler_->GetStreamUri( trt__GetStreamUri->ProfileToken,
                                                 trt__GetStreamUriResponse->MediaUri->Uri )  )
         return SOAP_ERR;
 
@@ -22,21 +22,21 @@ int
 MediaServiceImpl::GetVideoSources( _trt__GetVideoSources *trt__GetVideoSources,
                                    _trt__GetVideoSourcesResponse *trt__GetVideoSourcesResponse ) {
     MedGetVideoSourcesResponse r( trt__GetVideoSourcesResponse );
-    return m_pBaseServer->GetVideoSources(r);
+    return handler_->GetVideoSources(r);
 }
 
 int
 MediaServiceImpl::GetProfiles( _trt__GetProfiles *trt__GetProfiles,
                                _trt__GetProfilesResponse *trt__GetProfilesResponse ) {
     MedGetProfilesResponse r( trt__GetProfilesResponse );
-    return m_pBaseServer->GetProfiles(r);
+    return handler_->GetProfiles(r);
 }
 
 int
 MediaServiceImpl::GetProfile( _trt__GetProfile *trt__GetProfile,
                               _trt__GetProfileResponse *trt__GetProfileResponse) {
     MedGetProfileResponse r( trt__GetProfileResponse );
-    return m_pBaseServer->GetProfile( trt__GetProfile->ProfileToken, r );
+    return handler_->GetProfile( trt__GetProfile->ProfileToken, r );
 }
 
 int
@@ -54,12 +54,19 @@ int
 MediaServiceImpl::GetCompatibleVideoEncoderConfigurations( _trt__GetCompatibleVideoEncoderConfigurations *trt__GetCompatibleVideoEncoderConfigurations,
                                                            _trt__GetCompatibleVideoEncoderConfigurationsResponse *trt__GetCompatibleVideoEncoderConfigurationsResponse) {
     MedGetCompatibleVideoEncoderConfigurationsResponse r(trt__GetCompatibleVideoEncoderConfigurationsResponse);
-    return m_pBaseServer->GetCompatibleVideoEncoderConfigurations(r);
+    return handler_->GetCompatibleVideoEncoderConfigurations(r);
 }
 
 int
 MediaServiceImpl::GetCompatibleVideoAnalyticsConfigurations( _trt__GetCompatibleVideoAnalyticsConfigurations *trt__GetCompatibleVideoAnalyticsConfigurations,
                                                              _trt__GetCompatibleVideoAnalyticsConfigurationsResponse *trt__GetCompatibleVideoAnalyticsConfigurationsResponse) {
     MedGetCompatibleVideoAnalyticsConfigurationsResponse r(trt__GetCompatibleVideoAnalyticsConfigurationsResponse);
-    return m_pBaseServer->GetCompatibleVideoAnalyticsConfigurations(r);
+    return handler_->GetCompatibleVideoAnalyticsConfigurations(r);
+}
+
+int
+MediaServiceImpl::AddVideoAnalyticsConfiguration( _trt__AddVideoAnalyticsConfiguration *trt__AddVideoAnalyticsConfiguration,
+                                                  _trt__AddVideoAnalyticsConfigurationResponse *trt__AddVideoAnalyticsConfigurationResponse) {
+    return handler_->AddVideoAnalyticsConfiguration( trt__AddVideoAnalyticsConfiguration->ProfileToken,
+                                                          trt__AddVideoAnalyticsConfiguration->ConfigurationToken );
 }

@@ -1,5 +1,8 @@
 
 #include "OnvifSDK.h"
+
+#ifdef DEV_S
+
 #include "commonTypes.h"
 #include "WebDeviceBindingProxy.h"
 
@@ -153,7 +156,7 @@ int DevGetUsersResponse::GetUsers(std::vector<std::string> & users) const
 									tt__UserLevel__User ? "User" :
 									tt__UserLevel__Anonymous ? "Anonymous" : "Extended";
 
-
+		
 		users.push_back(strUserLevel);
 	}
 
@@ -180,7 +183,7 @@ CLASS_CTORS(tds, Dev, GetDeviceInformation)
 CLASS_CTORS(tds, Dev, GetDeviceInformationResponse)
 
 
-int DevGetDeviceInformationResponse::SetDeviceInfo(std::string strManufacturer, std::string strModel,
+int DevGetDeviceInformationResponse::SetDeviceInfo(std::string strManufacturer, std::string strModel, 
 					std::string strFirmwareVersion, std::string strSerialNumber, std::string strHardwareId)
 {
 	this->d->Manufacturer = strManufacturer;
@@ -233,8 +236,14 @@ CLASS_CTORS(tds, Dev, GetCapabilitiesResponse)
 
 int DevGetCapabilitiesResponse::SetDeviceCapabilities(const std::string & xaddr)
 {
-	this->d->Capabilities->Device->XAddr = xaddr;
-
+    d->Capabilities->Device->XAddr = xaddr;
+    d->Capabilities->Device->System = soap_new_tt__SystemCapabilities( d->soap, -1 );
+    d->Capabilities->Device->System->DiscoveryResolve = false;
+    d->Capabilities->Device->System->DiscoveryBye = true;
+    d->Capabilities->Device->System->RemoteDiscovery = true;
+    d->Capabilities->Device->System->SystemBackup = false;
+    d->Capabilities->Device->System->SystemLogging = true;
+    d->Capabilities->Device->System->FirmwareUpgrade = false;
 	return 0;
 }
 
@@ -256,7 +265,7 @@ int DevGetCapabilitiesResponse::SetMediaCapabilities(const std::string & xaddr) 
 int DevGetCapabilitiesResponse::SetAnalyticsCapabilities(const std::string & xaddr) {
     d->Capabilities->Analytics->XAddr = xaddr;
     d->Capabilities->Analytics->AnalyticsModuleSupport = true;
-    d->Capabilities->Analytics->RuleSupport = false;
+    d->Capabilities->Analytics->RuleSupport = true;
     return 0;
 }
 
@@ -281,10 +290,15 @@ CLASS_CTORS(tds, Dev, GetServicesResponse)
 
 int
 DevGetServicesResponse::AddService( const std::string & nameSpace,
-                                    const std::string & xaddr) {
+                                    const std::string & xaddr,
+                                    int ver) {
     d->Service.push_back( soap_new_tds__Service(this->d->soap) );
     d->Service.back()->Namespace = nameSpace;
     d->Service.back()->XAddr = xaddr;
+    d->Service.back()->Version = soap_new_tt__OnvifVersion(d->soap, -1);
+    d->Service.back()->Version->Major = ver;
+    d->Service.back()->Version->Minor = 0;
+
 
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -311,3 +325,4 @@ DevGetScopesResponse::AddItems( const std::vector<std::string> & scopes ) {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+#endif //DEV_S

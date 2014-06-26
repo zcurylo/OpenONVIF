@@ -3,6 +3,8 @@
 
 #include "sigrlog.h"
 #include "OnvifSDK.h"
+
+#ifdef RECV_S
 #include "WebReceiverBindingProxy.h"
 
 class ReceiverClient
@@ -18,5 +20,6 @@ public:
 private:
 	ReceiverBindingProxy m_proxy;
 };
+#endif //RECV_S
 #endif	// RECEIVERCLIENT_H
 

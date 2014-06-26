@@ -1,20 +1,39 @@
 #ifndef WebDeviceBindingServiceImpl_H
 #define WebDeviceBindingServiceImpl_H
 
+#include "OnvifSDK.h"
+
+#ifdef DEV_S
 #include "WebDeviceBindingService.h"
+#include "onvifService.h"
+
 class BaseServer;
 
-class DeviceServiceImpl : public DeviceBindingService
+class DeviceServiceImpl:
+        public IOnvifService,
+        public DeviceBindingService
 {
 private:
-    BaseServer * m_pBaseServer;
+    IOnvifDevMgmt * handler_;
+    BaseServer * baseServer_;
 public:
-    DeviceServiceImpl(BaseServer * pBaseServer, struct soap * pData):DeviceBindingService(pData)
-	{
-        m_pBaseServer = pBaseServer;
+    DeviceServiceImpl( BaseServer * baseServer,
+                       IOnvifDevMgmt * handler,
+                       struct soap * pData):
+        DeviceBindingService(pData),
+        handler_(handler),
+        baseServer_(baseServer)	{
     }
 
 	virtual DeviceBindingService* copy();
+
+    virtual int dispatch() {
+        return DeviceBindingService::dispatch();
+    }
+
+    virtual void destroy() {
+        DeviceBindingService::destroy();
+    }
 
 	/// Web service operation 'GetServices' (returns error code or SOAP_OK)
 	virtual	int GetServices(_tds__GetServices *tds__GetServices, _tds__GetServicesResponse *tds__GetServicesResponse);
@@ -509,4 +528,6 @@ public:
     virtual	int StartSystemRestore_(_tds__StartSystemRestore *tds__StartSystemRestore, _tds__StartSystemRestoreResponse *tds__StartSystemRestoreResponse) {return SOAP_OK;};
 
 };
+
+#endif //DEV_S
 #endif // WebDeviceBindingServiceImpl_H

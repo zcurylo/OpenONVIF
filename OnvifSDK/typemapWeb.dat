@@ -32,3 +32,4 @@ dn = "http://www.onvif.org/ver10/network/wsdl"
 dnrd= "http://www.onvif.org/ver10/network/wsdl/RemoteDiscoveryBinding"
 dndl= "http://www.onvif.org/ver10/network/wsdl/DiscoveryLookupBinding"
 
+_tt__ItemList_ElementItem = $ tt__CellLayout* Layout 0;

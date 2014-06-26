@@ -1,5 +1,7 @@
 
 #include "OnvifSDK.h"
+
+#ifdef RECV_S
 #include "commonTypes.h"
 #include "WebReceiverBindingProxy.h"
 
@@ -13,7 +15,7 @@ CLASS_CTORS(trv, Recv, GetReceiversResponse)
 int RecvGetReceiversResponse::SetReceivers(std::string & str)
 {
 	tt__Receiver * recv = soap_new_tt__Receiver(this->d->soap, -1);
-
+	
 	recv->Token = str;
 
 	this->d->Receivers.push_back(recv);
@@ -120,3 +122,5 @@ void RecvSetReceiverMode::setToken( const std::string & str)
 {
     d->ReceiverToken = str;
 }
+
+#endif //RECV_S

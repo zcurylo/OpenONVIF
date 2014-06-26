@@ -1,22 +1,40 @@
 #ifndef ANALYTICS_IMPL_H__
 #define ANALYTICS_IMPL_H__
 
+#include "OnvifSDK.h"
+
+#ifdef ANALY_S
+#include "onvifService.h"
 #include "WebRuleEngineBindingService.h"
 
 class BaseServer;
 
-class AnalyticsServiceImpl : public RuleEngineBindingService
+class AnalyticsServiceImpl:
+        public IOnvifService,
+        public RuleEngineBindingService
 {
 private:
-    BaseServer * m_pBaseServer;
+    IOnvifAnalytics* handler_;
+    BaseServer* baseServer_;
 public:
-    AnalyticsServiceImpl( BaseServer * pServer, struct soap* pData):
-        RuleEngineBindingService( pData ),
-        m_pBaseServer( pServer ) {
+    AnalyticsServiceImpl( BaseServer* server,
+                          IOnvifAnalytics* handler,
+                          struct soap* data ):
+        RuleEngineBindingService(data),
+        baseServer_(server),
+        handler_(handler) {
     }
 
     AnalyticsServiceImpl *copy() {
         return NULL;
+    }
+
+    virtual int dispatch() {
+        return RuleEngineBindingService::dispatch();
+    }
+
+    virtual void destroy() {
+        RuleEngineBindingService::destroy();
     }
 
     virtual	int GetSupportedRules(_tan__GetSupportedRules *tan__GetSupportedRules, _tan__GetSupportedRulesResponse *tan__GetSupportedRulesResponse) { return SOAP_ERR; }
@@ -37,7 +55,7 @@ public:
     virtual	int GetServiceCapabilities(_tan__GetServiceCapabilities *tan__GetServiceCapabilities, _tan__GetServiceCapabilitiesResponse *tan__GetServiceCapabilitiesResponse) { return SOAP_ERR; }
 
     /// Web service operation 'GetSupportedAnalyticsModules' (returns error code or SOAP_OK)
-    virtual	int GetSupportedAnalyticsModules(_tan__GetSupportedAnalyticsModules *tan__GetSupportedAnalyticsModules, _tan__GetSupportedAnalyticsModulesResponse *tan__GetSupportedAnalyticsModulesResponse) { return SOAP_ERR; }
+    virtual	int GetSupportedAnalyticsModules(_tan__GetSupportedAnalyticsModules *tan__GetSupportedAnalyticsModules, _tan__GetSupportedAnalyticsModulesResponse *tan__GetSupportedAnalyticsModulesResponse);
 
     /// Web service operation 'CreateAnalyticsModules' (returns error code or SOAP_OK)
     virtual	int CreateAnalyticsModules(_tan__CreateAnalyticsModules *tan__CreateAnalyticsModules, _tan__CreateAnalyticsModulesResponse *tan__CreateAnalyticsModulesResponse) { return SOAP_ERR; }
@@ -46,10 +64,11 @@ public:
     virtual	int DeleteAnalyticsModules(_tan__DeleteAnalyticsModules *tan__DeleteAnalyticsModules, _tan__DeleteAnalyticsModulesResponse *tan__DeleteAnalyticsModulesResponse) { return SOAP_ERR; }
 
     /// Web service operation 'GetAnalyticsModules' (returns error code or SOAP_OK)
-    virtual	int GetAnalyticsModules(_tan__GetAnalyticsModules *tan__GetAnalyticsModules, _tan__GetAnalyticsModulesResponse *tan__GetAnalyticsModulesResponse) { return SOAP_ERR; }
+    virtual	int GetAnalyticsModules(_tan__GetAnalyticsModules *tan__GetAnalyticsModules, _tan__GetAnalyticsModulesResponse *tan__GetAnalyticsModulesResponse);
 
     /// Web service operation 'ModifyAnalyticsModules' (returns error code or SOAP_OK)
     virtual	int ModifyAnalyticsModules(_tan__ModifyAnalyticsModules *tan__ModifyAnalyticsModules, _tan__ModifyAnalyticsModulesResponse *tan__ModifyAnalyticsModulesResponse) { return SOAP_ERR; }
 };
 
+#endif // ANALY_S
 #endif // ANALYTICS_IMPL_H__

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "defs.h"
+
 #define CLASS_DEFINITION_BEGIN(gSoapPrefix, servicePrefix, classname) \
     class _ ## gSoapPrefix ## __ ## classname; \
 	class servicePrefix ## classname \
@@ -18,9 +20,16 @@
 
 class soap;
 
+class IOnvifHandler {
+public:
+    virtual ~IOnvifHandler() = 0;
+};
+
 /////////////////////////////////////////////////////////////////////////////////////
 // DeviceMgmt ///////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+#ifdef DEV_S
+
 CLASS_DEFINITION_BEGIN(tds, Dev, SetSystemDateAndTime)
     int GetUTCDateAndTime(int & year, int & month, int & day, int & hour, int & min, int & sec) const;
     int SetUTCDateAndTime(int year, int month, int day, int hour, int min, int sec);
@@ -85,7 +94,7 @@ CLASS_DEFINITION_BEGIN(tds, Dev, GetServices)
 CLASS_DEFINITION_END()
 
 CLASS_DEFINITION_BEGIN(tds, Dev, GetServicesResponse)
-    int AddService(const std::string &nameSpace, const std::string &xaddr);
+    int AddService(const std::string &nameSpace, const std::string &xaddr, int ver);
 CLASS_DEFINITION_END()
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -98,8 +107,20 @@ CLASS_DEFINITION_BEGIN(tds, Dev, GetScopesResponse)
 CLASS_DEFINITION_END()
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+class IOnvifDevMgmt:
+    public virtual IOnvifHandler {
+public:
+    virtual int GetDateAndTime( /*out*/ DevGetSystemDateAndTimeResponse & ) = 0;
+    virtual int SetDateAndTime( DevSetSystemDateAndTime & ) = 0;
+    virtual int GetUsers( /*out*/ DevGetUsersResponse & ) = 0;
+};
+
+#endif // DEV_S
+/////////////////////////////////////////////////////////////////////////////////////
 // DeviceIO /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+#ifdef DEVIO_S
 
 CLASS_DEFINITION_BEGIN(tmd, DevIO, GetVideoOutputs)
 CLASS_DEFINITION_END()
@@ -111,8 +132,18 @@ CLASS_DEFINITION_BEGIN(tmd, DevIO, GetVideoOutputsResponse)
 CLASS_DEFINITION_END()
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+class IOnvifDevIO:
+    public virtual IOnvifHandler {
+public:
+    virtual int GetVideoOutputs( /*out*/ DevIOGetVideoOutputsResponse & ) = 0;
+};
+
+#endif // DEVIO_S
+/////////////////////////////////////////////////////////////////////////////////////
 // Display //////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+#ifdef DISP_S
 
 struct DispRectangle
 {
@@ -174,8 +205,24 @@ CLASS_DEFINITION_BEGIN(tls, Disp, CreatePaneConfigurationResponse)
 CLASS_DEFINITION_END()
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+class IOnvifDisplay:
+    public virtual IOnvifHandler {
+public:
+    virtual int GetLayout( std::string &,
+                           DispGetLayoutResponse & ) = 0;
+    virtual int GetDisplayOptions( const std::string &,
+                                   DispGetDisplayOptionsResponse & ) = 0;
+    virtual int SetLayout( DispSetLayout &) = 0;
+    virtual int CreatePaneConfiguration( DispCreatePaneConfiguration &,
+                                         DispCreatePaneConfigurationResponse & ) = 0;
+};
+
+#endif //DISP_S
+/////////////////////////////////////////////////////////////////////////////////////
 // Receiver /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+#ifdef RECV_S
 
 CLASS_DEFINITION_BEGIN(trv, Recv, GetReceivers)
 CLASS_DEFINITION_END()
@@ -210,8 +257,22 @@ CLASS_DEFINITION_BEGIN(trv, Recv, SetReceiverModeResponse)
 CLASS_DEFINITION_END()
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+class IOnvifReceiver:
+    public virtual IOnvifHandler {
+public:
+    virtual int GetReceivers( RecvGetReceiversResponse & ) = 0;
+    virtual int CreateReceiver( const std::string & uri,
+                                std::string & recvToken ) = 0;
+    virtual int SetReceiverMode( const std::string & recvToken, bool bMode ) = 0;
+};
+
+#endif //RECV_S
+/////////////////////////////////////////////////////////////////////////////////////
 // RecordingControl /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+#ifdef RECORD_S
+
 CLASS_DEFINITION_BEGIN(trc, Rec, CreateRecording)
     void setSource (const std::string & id, const std::string & address);
     void getSource (std::string & id, std::string & address) const;
@@ -254,8 +315,24 @@ CLASS_DEFINITION_BEGIN(trc, Rec, DeleteRecordingJobResponse)
 CLASS_DEFINITION_END()
 
 /////////////////////////////////////////////////////////////////////////////////////
+
+class IOnvifRecording:
+    public virtual IOnvifHandler {
+public:
+    virtual int CreateRecording( RecCreateRecording &,
+                                 RecCreateRecordingResponse & ) = 0;
+    virtual int CreateRecordingJob( RecCreateRecordingJob &,
+                                    RecCreateRecordingJobResponse & ) = 0;
+    virtual int DeleteRecording( const std::string & ) = 0;
+    virtual int DeleteRecordingJob( const std::string & ) = 0;
+};
+
+#endif //RECORD_S
+/////////////////////////////////////////////////////////////////////////////////////
 // Eventing /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+#ifdef EVNT_S
+
 CLASS_DEFINITION_BEGIN(wsnt, Evnt, Subscribe)
     void setAddress(const std::string & address);
 CLASS_DEFINITION_END()
@@ -266,9 +343,38 @@ CLASS_DEFINITION_END()
 CLASS_DEFINITION_BEGIN(wsnt, Evnt, Notify)
 CLASS_DEFINITION_END()
 
+#endif //EVNT_S
 /////////////////////////////////////////////////////////////////////////////////////
 // Media ////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+#ifdef MEDIA_S
+
+namespace CellDetectionLayout {
+    enum Fill {
+        ALL,
+        CENTER
+    };
+}
+
+class tt__VideoAnalyticsConfiguration;
+class tt__Config;
+class MedVideoAnalyticsConfiguration {
+    public:
+    MedVideoAnalyticsConfiguration():
+        d(NULL) {
+    }
+    MedVideoAnalyticsConfiguration( tt__VideoAnalyticsConfiguration * p );
+    MedVideoAnalyticsConfiguration( soap* pSoap,
+                                    const std::string& name,
+                                    const std::string& token,
+                                    CellDetectionLayout::Fill fill );
+    std::vector<class tt__Config * > getAnalyticsModules();
+    bool getFill( CellDetectionLayout::Fill & fill ) const;
+    std::string getToken() const;
+
+    tt__VideoAnalyticsConfiguration * d;
+};
+
 class tt__Profile;
 class MedProfile {
     public:
@@ -280,8 +386,10 @@ class MedProfile {
     tt__Profile* d;
     void AddVideoSrc( const std::string & sourceToken, int w, int h );
     void AddVideoEnc( int w, int h );
-    void AddVideoAnalytics();
+    void AddVideoAnalytics(MedVideoAnalyticsConfiguration & );
     const std::string & getToken();
+    const std::string & getVAName();
+    MedVideoAnalyticsConfiguration getVideoAnalytics() const;
 };
 
 class tt__VideoSource;
@@ -295,7 +403,6 @@ class MedVideoSource {
     tt__VideoSource* d;
 };
 
-
 CLASS_DEFINITION_BEGIN(trt, Med, GetProfileResponse)
     void SetProfile( MedProfile&);
 CLASS_DEFINITION_END()
@@ -307,7 +414,7 @@ CLASS_DEFINITION_END()
 CLASS_DEFINITION_BEGIN(trt, Med, GetVideoSourcesResponse)
     void AddEntry( const std::string & sourceToken,
                    int w, int h, float frmRate );
-    void AddEntry( const MedVideoSource &  );
+    void AddEntry( const MedVideoSource & );
 CLASS_DEFINITION_END()
 
 CLASS_DEFINITION_BEGIN(trt, Med, GetCompatibleVideoEncoderConfigurationsResponse)
@@ -315,65 +422,66 @@ CLASS_DEFINITION_BEGIN(trt, Med, GetCompatibleVideoEncoderConfigurationsResponse
 CLASS_DEFINITION_END()
 
 CLASS_DEFINITION_BEGIN(trt, Med, GetCompatibleVideoAnalyticsConfigurationsResponse)
-    void AddVideoAn();
+    void AddVideoAn( MedVideoAnalyticsConfiguration& );
 CLASS_DEFINITION_END()
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-#define USER_EVENT_FIFO "/tmp/userEventsFIFOOnvifSDK"
-#define USER_EVENT_MESSAGE "<?xml version=\"1.0\" encoding=\"UTF-8\"?><OnvifSDKMessage>Motion</OnvifSDKMessage>"
-
-class IOnvif
-{
+class IOnvifMedia:
+    public virtual IOnvifHandler {
 public:
-
-    //===DEV==============================
-    virtual int GetDateAndTime( /*out*/ DevGetSystemDateAndTimeResponse & ) = 0;
-    virtual int SetDateAndTime( DevSetSystemDateAndTime & ) = 0;
-    virtual int GetUsers( /*out*/ DevGetUsersResponse & ) = 0;
-
-    //===DEVIO============================
-    virtual int GetVideoOutputs( /*out*/ DevIOGetVideoOutputsResponse & ) = 0;
-
-    //===DISP=============================
-    virtual int GetLayout( std::string &, /*out*/ DispGetLayoutResponse & ) = 0;
-    virtual int GetDisplayOptions( const std::string &, DispGetDisplayOptionsResponse & ) = 0;
-    virtual int SetLayout( DispSetLayout &) = 0;
-    virtual int CreatePaneConfiguration( DispCreatePaneConfiguration &, /*out*/ DispCreatePaneConfigurationResponse & ) = 0;
-
-    //===RECV=============================
-    virtual int GetReceivers( RecvGetReceiversResponse & ) = 0;
-    virtual int CreateReceiver( const std::string & uri, /*out*/ std::string & recvToken ) = 0;
-    virtual int SetReceiverMode( const std::string & recvToken, bool bMode ) = 0;
-
-    //===RECORDING=========================
-    virtual int CreateRecording (RecCreateRecording &, RecCreateRecordingResponse &) = 0;
-    virtual int CreateRecordingJob (RecCreateRecordingJob &, RecCreateRecordingJobResponse &) = 0;
-    virtual int DeleteRecording (const std::string &) = 0;
-    virtual int DeleteRecordingJob (const std::string &) = 0;
-
-    //===MEDIA==============================
     virtual int GetProfile(const std::string & profileToken, MedGetProfileResponse & resp) = 0;
     virtual int GetProfiles(MedGetProfilesResponse &) = 0;
     virtual int GetVideoSources(MedGetVideoSourcesResponse &) = 0;
     virtual int GetStreamUri( const std::string& token, std::string & uri) = 0;
-    virtual int GetCompatibleVideoEncoderConfigurations(MedGetCompatibleVideoEncoderConfigurationsResponse& resp) = 0;
-    virtual int GetCompatibleVideoAnalyticsConfigurations(MedGetCompatibleVideoAnalyticsConfigurationsResponse& resp) = 0;
+    virtual int GetCompatibleVideoEncoderConfigurations( MedGetCompatibleVideoEncoderConfigurationsResponse& r ) = 0;
+    virtual int GetCompatibleVideoAnalyticsConfigurations( MedGetCompatibleVideoAnalyticsConfigurationsResponse& r ) = 0;
+    virtual int AddVideoAnalyticsConfiguration( const std::string& profileToken,
+                                                const std::string& confToken ) = 0;
 };
 
-typedef enum _Services
-{
-    DEV_S    = 2,
-    DEVIO_S  = 4,
-    DISP_S   = 8,
-    RECV_S   = 16,
-    REPLAY_S = 32,
-    RECORD_S = 64,
-    SEARCH_S = 128,
-    EVNT_S   = 256,
-    MEDIA_S  = 512,
-    ANALY_S  = 1024
-} Services;
+#endif //MEDIA_S
+/////////////////////////////////////////////////////////////////////////////////////
+// Analytics ////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+#ifdef ANALY_S
+
+CLASS_DEFINITION_BEGIN(tan, Anlt, GetAnalyticsModulesResponse)
+    void setModule( std::vector<tt__Config * > & m );
+CLASS_DEFINITION_END()
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+class IOnvifAnalytics:
+    public virtual IOnvifHandler {
+public:
+    virtual int GetAnalyticsModules( const std::string& confToken,
+                                     AnltGetAnalyticsModulesResponse& ) = 0;
+};
+
+#endif //ANALY_S
+/////////////////////////////////////////////////////////////////////////////////////
+
+#define ServicesAmount 10
+namespace OnvifService {
+    enum Type {
+        DEV = 0,
+        DEVIO,
+        DISP,
+        RECV,
+        REPLAY,
+        RECORD,
+        SEARCH,
+        EVNT,
+        MEDIA,
+        ANALY
+    };
+}
+
+struct OnvifHandlers{
+public:
+    IOnvifHandler* h_[ServicesAmount];
+};
 
 namespace OnvifDevice {
     typedef enum _Type
@@ -388,7 +496,7 @@ namespace OnvifDevice {
 class IOnvifServer
 {
 public:
-    virtual int Init(int iServicesToHost, IOnvif* pHandler) = 0;
+    virtual int Init( const OnvifHandlers& ) = 0;
     virtual int SetDeviceInfo( OnvifDevice::Type type,
                                const std::string & manufacturer,
                                const std::string & model,
@@ -400,15 +508,18 @@ public:
                                int webservicePort ) = 0;
     virtual MedProfile CreateMediaProfile(const std::string &name, const std::string &token) = 0;
     virtual MedVideoSource CreateVideoSource(const std::string &token, int w, int h, double frmRate) = 0;
+    virtual MedVideoAnalyticsConfiguration CreateVAConf( const std::string& name,
+                                                         const std::string& token,
+                                                         CellDetectionLayout::Fill fill ) = 0;
     virtual std::string GetIp() = 0;
     virtual int Run() = 0;
+    virtual void SendNotification() = 0;
 };
 
 IOnvifServer* getOnvifServer();
 void deleteOnvifServer(IOnvifServer*);
 
-class DiscoveryMatch
-{
+class DiscoveryMatch {
 public:
     DiscoveryMatch(){}
     DiscoveryMatch( const std::string & type,
@@ -425,14 +536,29 @@ public:
 
 typedef void (*notificationCatcherFunc)( const char * );
 
-class IOnvifClient : public IOnvif
-{
+class IOnvifClient {
 public:
     virtual int Init(const char* pchEndpoint) = 0;
     virtual std::vector<DiscoveryMatch> DiscoverDevices( OnvifDevice::Type type ) = 0;
     virtual void Subscribe() = 0;
     virtual bool SetNotificationCatcher(notificationCatcherFunc func) = 0;
     virtual soap* GetSoap() = 0;
+
+#ifdef DEV_S
+    virtual IOnvifDevMgmt* getDeviceClient() = 0;
+#endif
+#ifdef DEVIO_S
+    virtual IOnvifDevIO* getDeviceIOClient() = 0;
+#endif
+#ifdef DISP_S
+    virtual IOnvifDisplay* getDisplayClient() = 0;
+#endif
+#ifdef RECV_S
+    virtual IOnvifReceiver* getReceiverClient() = 0;
+#endif
+#ifdef RECORD_S
+    virtual IOnvifRecording* getRecordingClient() = 0;
+#endif
 };
 
 IOnvifClient* getOnvifClient();

@@ -1,7 +1,11 @@
 #ifndef NOTIFICATION_PRODUCER_H__
 #define NOTIFICATION_PRODUCER_H__
-#include "pthread.h"
+
 #include <algorithm>
+
+#include "pthread.h"
+
+#include "onvifService.h"
 #include "EventingClient.h"
 #include "EventingServiceImpl.h"
 
@@ -10,20 +14,23 @@
 #define MSG_LEN 80
 #define MSG_NAME "OnvifSDKMessage"
 
-class NotificationProducer
+class NotificationProducer:
+        public IOnvifService
 {
 public:
     NotificationProducer( BaseServer * pBaseServer, struct soap* pData );
-    ~NotificationProducer();
+    virtual ~NotificationProducer();
 
     bool init();
     int dispatch();
     void destroy();
     bool addConsumer( const std::string& consumerEndpoint );
     void stop();
+    void sendNotification();
 private:
     static void* notifyFunc(void* Producer);
 
+    bool notify_;
     bool shutdownFlag_;
     int userEventsSocket_;
     std::vector<std::string> subscribers_;

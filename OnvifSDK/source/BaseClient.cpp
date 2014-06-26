@@ -7,159 +7,124 @@ IOnvifClient* getOnvifClient()
 }
 
 BaseClient::BaseClient():
-    m_pSoap (soap_new())
+    soap_ (soap_new())
 {
 }
+
+#ifdef DEV_S
+IOnvifDevMgmt* BaseClient::getDeviceClient() {
+    return devClient_;
+}
+#endif
+#ifdef DEVIO_S
+IOnvifDevIO* BaseClient::getDeviceIOClient() {
+    return devIOClient_;
+}
+#endif
+#ifdef DISP_S
+IOnvifDisplay* BaseClient::getDisplayClient() {
+    return dispClient_;
+}
+#endif
+#ifdef RECV_S
+IOnvifReceiver* BaseClient::getReceiverClient() {
+    return recvClient_;
+}
+#endif
+#ifdef RECORD_S
+IOnvifRecording* BaseClient::getRecordingClient() {
+    return recordingClient_;
+}
+#endif
 
 BaseClient::~BaseClient()
 {
-    if (m_pDevClient)
-         delete m_pDevClient;
-    if (m_pDevIOClient)
-        delete m_pDevIOClient;
-    if (m_pDispClient)
-        delete m_pDispClient;
-    if (m_pRecvClient)
-        delete m_pRecvClient;
-    if (m_pRecordingClient)
-        delete m_pRecordingClient;
-    if (m_pNotsConsumer)
-        delete m_pNotsConsumer;
+    #ifdef DEV_S
+    if (devClient_)
+         delete devClient_;
+    #endif
+    #ifdef DEVIO_S
+    if (devIOClient_)
+        delete devIOClient_;
+    #endif
+    #ifdef DISP_S
+    if (dispClient_)
+        delete dispClient_;
+    #endif
+    #ifdef RECV_S
+    if (recvClient_)
+        delete recvClient_;
+    #endif
+    #ifdef RECORD_S
+    if (recordingClient_)
+        delete recordingClient_;
+    #endif
+    #ifdef EVNT_S
+    if (notsConsumer_)
+        delete notsConsumer_;
+    #endif
 
-     if(m_pSoap)
-     {
-         soap_destroy(m_pSoap);
-         soap_end(m_pSoap);
-         soap_free(m_pSoap);
+     if(soap_) {
+         soap_destroy(soap_);
+         soap_end(soap_);
+         soap_free(soap_);
      }
 }
 
-soap* BaseClient::GetSoap()
-{
-    return m_pSoap;
+soap*
+BaseClient::GetSoap() {
+    return soap_;
 }
 
-int BaseClient::Init(const char* pchEndpoint)
-{
-    if(!m_pSoap) {
+int
+BaseClient::Init(const char* pchEndpoint) {
+    if( !soap_ ) {
         SIGRLOG (SIGRWARNING, "BaseClient::Init failed" );
         return -1;
     }
 
-    m_pDevClient = new DeviceClient (pchEndpoint, m_pSoap);
-    m_pDevIOClient = new DeviceIOClient (pchEndpoint, m_pSoap);
-    m_pDispClient = new DisplayClient (pchEndpoint, m_pSoap);
-    m_pRecvClient = new ReceiverClient (pchEndpoint, m_pSoap);
-    m_pRecordingClient = new RecordingClient (pchEndpoint, m_pSoap);
-    m_pNotsConsumer = new NotificationConsumer(pchEndpoint, m_pSoap);
+#ifdef DEV_S
+    devClient_ = new DeviceClient (pchEndpoint, soap_);
+#endif
+#ifdef DEVIO_S
+    devIOClient_ = new DeviceIOClient (pchEndpoint, soap_);
+#endif
+#ifdef DISP_S
+    dispClient_ = new DisplayClient (pchEndpoint, soap_);
+#endif
+#ifdef RECV_S
+    recvClient_ = new ReceiverClient (pchEndpoint, soap_);
+#endif
+#ifdef RECORD_S
+    recordingClient_ = new RecordingClient (pchEndpoint, soap_);
+#endif
+#ifdef EVNT_S
+    notsConsumer_ = new NotificationConsumer(pchEndpoint, soap_);
+#endif
 
-    if(m_pNotsConsumer && !m_pNotsConsumer->init()) {
+    if( !notsConsumer_ || !notsConsumer_->init() ) {
         SIGRLOG (SIGRWARNING, "BaseClient::Init failed to init NotificationConsumer" );
         return -1;
     }
 
-    if( m_pDevClient && m_pDevIOClient && m_pDispClient &&
-        m_pRecvClient && m_pRecordingClient && m_pNotsConsumer )
+    if( devClient_ )
         return 0;
 
     SIGRLOG (SIGRWARNING, "BaseClient::Init failed to create proxies" );
     return -1;
 }
 
-std::vector<DiscoveryMatch> BaseClient::DiscoverDevices( OnvifDevice::Type type )
-{
-    return m_pWsdd.getMembers( DeviceInfoStorage::ResolveType(type) );
+std::vector<DiscoveryMatch>
+BaseClient::DiscoverDevices( OnvifDevice::Type type ) {
+    return wsdd_.getMembers( DeviceInfoStorage::ResolveType(type) );
 }
 
-void BaseClient::Subscribe()
-{
-    m_pNotsConsumer->subscribe();
+void
+BaseClient::Subscribe() {
+    notsConsumer_->subscribe();
 }
 
-bool BaseClient::SetNotificationCatcher(notificationCatcherFunc func) {
-    return m_pNotsConsumer->setCatcher(func);
-}
-
-int BaseClient::GetDateAndTime(DevGetSystemDateAndTimeResponse & r)
-{
-    return m_pDevClient->GetDateAndTime(r);
-}
-
-int BaseClient::SetDateAndTime( DevSetSystemDateAndTime & r)
-{
-    return m_pDevClient->SetDateAndTime(r);
-}
-
-int BaseClient::GetUsers(DevGetUsersResponse & r)
-{
-    return m_pDevClient->GetUsers(r);
-}
-
-//int BaseClient::GetServices(DevGetServicesResponse &r)
-//{
-//    return m_pDevClient->GetServices(r);
-//}
-
-int BaseClient::GetVideoOutputs(DevIOGetVideoOutputsResponse & r)
-{
-    return m_pDevIOClient->GetVideoOutputs(r);
-}
-
-int BaseClient::GetLayout( std::string & token, DispGetLayoutResponse & resp)
-{
-    DispGetLayout req(m_pSoap);
-    req.SetLayout(token);
-    return m_pDispClient->GetLayout(req, resp);
-}
-
-int BaseClient::GetDisplayOptions(const std::string & voToken, DispGetDisplayOptionsResponse & resp)
-{
-    DispGetDisplayOptions req(m_pSoap);
-    req.SetVO(voToken);
-    return m_pDispClient->GetDisplayOptions(req, resp);
-}
-
-int BaseClient::SetLayout(DispSetLayout & r)
-{
-    return m_pDispClient->SetLayout(r);
-}
-
-int BaseClient::CreatePaneConfiguration(DispCreatePaneConfiguration & req, DispCreatePaneConfigurationResponse & resp)
-{
-    return m_pDispClient->CreatePaneConfiguration(req, resp);
-}
-
-int BaseClient::GetReceivers( RecvGetReceiversResponse & r)
-{
-    return m_pRecvClient->GetReceivers(r);
-}
-
-int BaseClient::CreateReceiver(const std::string & uri, std::string & recvToken )
-{
-    return m_pRecvClient->CreateReceiver( uri, recvToken);
-}
-
-int BaseClient::SetReceiverMode( const std::string & recvToken, bool bMode )
-{
-    return m_pRecvClient->SetReceiverMode(recvToken, bMode);
-}
-
-int BaseClient::CreateRecording (RecCreateRecording & req, RecCreateRecordingResponse & resp)
-{
-    return m_pRecordingClient->CreateRecording(req, resp);
-}
-
-int BaseClient::CreateRecordingJob (RecCreateRecordingJob & req, RecCreateRecordingJobResponse & resp)
-{
-    return m_pRecordingClient->CreateRecordingJob(req, resp);
-}
-
-int BaseClient::DeleteRecording (const std::string &s)
-{
-    return m_pRecordingClient->DeleteRecording(s);
-}
-
-int BaseClient::DeleteRecordingJob (const std::string &s)
-{
-    return m_pRecordingClient->DeleteRecordingJob(s);
+bool
+BaseClient::SetNotificationCatcher(notificationCatcherFunc func) {
+    return notsConsumer_->setCatcher(func);
 }
