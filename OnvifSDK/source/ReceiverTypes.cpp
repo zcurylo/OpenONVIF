@@ -15,7 +15,7 @@ CLASS_CTORS(trv, Recv, GetReceiversResponse)
 int RecvGetReceiversResponse::SetReceivers(std::string & str)
 {
 	tt__Receiver * recv = soap_new_tt__Receiver(this->d->soap, -1);
-	
+
 	recv->Token = str;
 
 	this->d->Receivers.push_back(recv);

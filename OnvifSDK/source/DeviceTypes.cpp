@@ -156,7 +156,7 @@ int DevGetUsersResponse::GetUsers(std::vector<std::string> & users) const
 									tt__UserLevel__User ? "User" :
 									tt__UserLevel__Anonymous ? "Anonymous" : "Extended";
 
-		
+
 		users.push_back(strUserLevel);
 	}
 
@@ -183,7 +183,7 @@ CLASS_CTORS(tds, Dev, GetDeviceInformation)
 CLASS_CTORS(tds, Dev, GetDeviceInformationResponse)
 
 
-int DevGetDeviceInformationResponse::SetDeviceInfo(std::string strManufacturer, std::string strModel, 
+int DevGetDeviceInformationResponse::SetDeviceInfo(std::string strManufacturer, std::string strModel,
 					std::string strFirmwareVersion, std::string strSerialNumber, std::string strHardwareId)
 {
 	this->d->Manufacturer = strManufacturer;

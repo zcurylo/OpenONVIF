@@ -13,7 +13,7 @@ ReceiverClient::~ReceiverClient()
 int ReceiverClient::GetReceivers(RecvGetReceiversResponse & resp)
 {
 	RecvGetReceivers req(m_proxy.soap);
-	
+
 	int nRes = m_proxy.GetReceivers(req.d, resp.d);
 
     CHECKRETURN(nRes, "ReceiverClient::GetReceivers");

@@ -7,6 +7,6 @@ gsoap 2.8.15 or above
 ### build ###
 mkdir OnvifSDK-build
 cd  OnvifSDK-build
-cmake ../OnvifSDK 
+cmake ../OnvifSDK
 make
 

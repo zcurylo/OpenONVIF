@@ -8,7 +8,7 @@ DeviceClient::DeviceClient(const char * pchAdress, soap * s):m_proxy(s)
 }
 
 int DeviceClient::GetDateAndTime(DevGetSystemDateAndTimeResponse & resp)
-{	
+{
 	DevGetSystemDateAndTime req(m_proxy.soap);
 
 	int nRes = m_proxy.GetSystemDateAndTime(req.d, resp.d);

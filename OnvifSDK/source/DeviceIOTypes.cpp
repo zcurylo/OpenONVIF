@@ -28,7 +28,7 @@ CLASS_CTORS(tmd, DevIO, GetVideoOutputsResponse)
 int DevIOGetVideoOutputsResponse::SetVideoOutputs(const std::string & videoOutput)
 {
 	tt__VideoOutput * vo = soap_new_tt__VideoOutput(this->d->soap, -1);
-	
+
     vo->token = videoOutput;
 
     this->d->VideoOutputs.push_back(vo);

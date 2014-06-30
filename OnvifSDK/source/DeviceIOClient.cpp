@@ -17,7 +17,7 @@ int DeviceIOClient::GetVideoOutputs(DevIOGetVideoOutputsResponse & resp)
 	DevIOGetVideoOutputs req(m_proxy.soap);
 
 	int nRes = m_proxy.GetVideoOutputs(req.d, resp.d);
-	
+
 	CHECKRETURN(nRes, "DeviceIOClient::GetVideoOutputs");
 }
 

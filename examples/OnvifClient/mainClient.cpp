@@ -40,6 +40,6 @@ int main(const int argc, const char* argv[])
     pClient->Subscribe();
 
     sleep(15);
-    return 0; 
+    return 0;
 }
 

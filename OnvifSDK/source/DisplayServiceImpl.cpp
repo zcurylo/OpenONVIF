@@ -18,7 +18,7 @@ int DisplayServiceImpl::GetLayout(_tls__GetLayout *tls__GetLayout, _tls__GetLayo
 	std::string requestedLayoutToken;
 	req.GetLayout(requestedLayoutToken);
 
-	
+
     int iRet = handler_->GetLayout(requestedLayoutToken, resp);
 
 

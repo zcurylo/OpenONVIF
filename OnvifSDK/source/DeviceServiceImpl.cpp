@@ -9,7 +9,7 @@ DeviceServiceImpl::GetSystemDateAndTime( _tds__GetSystemDateAndTime *tds__GetSys
                                          _tds__GetSystemDateAndTimeResponse *tds__GetSystemDateAndTimeResponse ) {
 	DevGetSystemDateAndTimeResponse dt(tds__GetSystemDateAndTimeResponse);
     int nRes = handler_->GetDateAndTime(dt);
-	CHECKRETURN(nRes, "DeviceServiceImpl::GetSystemDateAndTime");	
+	CHECKRETURN(nRes, "DeviceServiceImpl::GetSystemDateAndTime");
 }
 
 // for while not supporting copy
@@ -40,14 +40,14 @@ DeviceServiceImpl::GetCapabilities( _tds__GetCapabilities *tds__GetCapabilities,
         resp.SetMediaCapabilities( baseServer_->m_endpoint );
         resp.SetAnalyticsCapabilities( baseServer_->m_endpoint );
     }
-	
+
 	return SOAP_OK;
 }
 
 int
 DeviceServiceImpl::GetDeviceInformation( _tds__GetDeviceInformation *tds__GetDeviceInformation,
                                          _tds__GetDeviceInformationResponse *tds__GetDeviceInformationResponse ) {
-	DevGetDeviceInformationResponse resp(tds__GetDeviceInformationResponse);	
+	DevGetDeviceInformationResponse resp(tds__GetDeviceInformationResponse);
     resp.SetDeviceInfo( baseServer_->m_manufacturer, baseServer_->m_model,
                         baseServer_->m_firmwareVersion, baseServer_->m_serialNumber, baseServer_->m_hardwareId );
 
@@ -72,7 +72,7 @@ DeviceServiceImpl::GetServices( _tds__GetServices *tds__GetServices,
 
     resp.AddService( "http://www.onvif.org/ver10/events/wsdl",  baseServer_->m_endpoint, 1 );
     resp.AddService( "http://www.onvif.org/ver20/analytics/wsdl",  baseServer_->m_endpoint, 2 );
-	return 0;	
+	return 0;
 }
 
 int

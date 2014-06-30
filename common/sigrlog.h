@@ -53,7 +53,7 @@ static const char * loglevel [SIGREND] = {"CRITICAL", "WARNING", "DEBUG0","DEBUG
     			fclose(fp);\
     		}\
     	}\
-    }while(0) 
+    }while(0)
 
 #define CHECKRETURN(nRes, str) \
     do{\
@@ -68,6 +68,6 @@ static const char * loglevel [SIGREND] = {"CRITICAL", "WARNING", "DEBUG0","DEBUG
         return 0;\
     }\
     }while(0)
-    
+
 
 #endif // SIGRLOG_H

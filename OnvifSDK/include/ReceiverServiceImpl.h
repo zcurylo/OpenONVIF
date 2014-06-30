@@ -19,7 +19,7 @@ public:
         handler_(handler),
         ReceiverBindingService(data) {
     }
-	
+
 	virtual	ReceiverBindingService *copy();
 
     /// Web service operation 'GetServiceCapabilities' (returns error code or SOAP_OK)
