@@ -1,4 +1,4 @@
-
+#include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -7,6 +7,8 @@
 #include "EventsEmitter.h"
 
 #define BUFFER_SIZE 128
+#define USER_EVENT_MESSAGE "some message"
+#define USER_EVENT_FIFO "/tmp/events_fifo"
 
 bool
 EventsEmitter::run() {

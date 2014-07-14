@@ -1,4 +1,4 @@
-
+#include <unistd.h>
 #include <stdio.h>
 #include "sigrlog.h"
 #include "OnvifTestServer.h"
