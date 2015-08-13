@@ -1,0 +1,2 @@
+/home/zcurylo/Documents/WORK_PROJECTS/OpenONVIF/bin/OnvifSDK-b/CMakeFiles/OnvifSDK.dir
+/home/zcurylo/Documents/WORK_PROJECTS/OpenONVIF/bin/OnvifSDK-b/xml/CMakeFiles/OnvifSDK_xml.dir

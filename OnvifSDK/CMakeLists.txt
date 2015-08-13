@@ -28,6 +28,7 @@ endif()
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
+message(STATUS "trying to fing gSOAP")
 find_package(GSOAP 2.8.15 REQUIRED)
 message(STATUS "The GSOAP version: ${GSOAP_VERSION}")
 message(STATUS "The GSOAP include directory: ${GSOAP_INCLUDE_DIR}")
