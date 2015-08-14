@@ -3,6 +3,8 @@
 
 #include "OnvifSDK.h"
 
+#define ANALY_S
+
 #ifdef ANALY_S
 #include "onvifService.h"
 #include "WebRuleEngineBindingService.h"

@@ -1,6 +1,8 @@
 #ifndef ReplayServiceImpl_H
 #define ReplayServiceImpl_H
 
+#define REPLAY_S // ZCU
+
 #include "OnvifSDK.h"
 #ifdef REPLAY_S
 
@@ -29,6 +31,11 @@ public:
 
     /// Web service operation 'SetReplayConfiguration' (returns error code or SOAP_OK)
     virtual	int SetReplayConfiguration(_trp__SetReplayConfiguration *trp__SetReplayConfiguration, _trp__SetReplayConfigurationResponse *trp__SetReplayConfigurationResponse) { return SOAP_OK; }
+
+kupa 
+marchewka
+ogorek
+
 
 
 };

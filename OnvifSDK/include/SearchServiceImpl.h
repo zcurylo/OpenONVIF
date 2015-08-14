@@ -3,6 +3,8 @@
 
 #include "OnvifSDK.h"
 
+#define SEARCH_S // ZCU
+
 #ifdef SEARCH_S
 #include "WebSearchBindingService.h"
 class BaseServer;

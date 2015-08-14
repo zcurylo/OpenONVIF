@@ -37,8 +37,8 @@ class NotificationConsumer;
         {
         }
 
-        virtual	PullPointSubscriptionBindingService *copy()
-	{ return new EventingServiceImpl(*this);} // ZCU: up to now withiout error handling 
+        virtual	PullPointSubscriptionBindingService *copy();
+	// { return new EventingServiceImpl(*this);} // ZCU: up to now withiout error handling 
 
         virtual	int PullMessages(_tev__PullMessages *tev__PullMessages, _tev__PullMessagesResponse *tev__PullMessagesResponse) { return SOAP_ERR; }
 
@@ -55,22 +55,21 @@ class NotificationConsumer;
         virtual	int CreatePullPointSubscription(_tev__CreatePullPointSubscription *tev__CreatePullPointSubscription, _tev__CreatePullPointSubscriptionResponse *tev__CreatePullPointSubscriptionResponse) { return SOAP_ERR; }
 
         /// Web service operation 'GetEventProperties' (returns error code or SOAP_OK)
-        virtual	int GetEventProperties(_tev__GetEventProperties *tev__GetEventProperties, _tev__GetEventPropertiesResponse *tev__GetEventPropertiesResponse)
-	{ return SOAP_ERR;}
+        virtual	int GetEventProperties(_tev__GetEventProperties *tev__GetEventProperties, _tev__GetEventPropertiesResponse *tev__GetEventPropertiesResponse);//ZCU{ return SOAP_ERR;}
         /// Web service operation 'Renew' (returns error code or SOAP_OK)
-        virtual	int Renew(_wsnt__Renew *wsnt__Renew, _wsnt__RenewResponse *wsnt__RenewResponse);
+        virtual	int Renew(_wsnt__Renew *wsnt__Renew, _wsnt__RenewResponse *wsnt__RenewResponse); //ZCU {return SOAP_ERR;};
 
         /// Web service operation 'Unsubscribe' (returns error code or SOAP_OK)
         virtual	int Unsubscribe(_wsnt__Unsubscribe *wsnt__Unsubscribe, _wsnt__UnsubscribeResponse *wsnt__UnsubscribeResponse) { return SOAP_ERR; }
 
         /// Web service operation 'Subscribe' (returns error code or SOAP_OK)
-        virtual	int Subscribe(_wsnt__Subscribe *wsnt__Subscribe, _wsnt__SubscribeResponse *wsnt__SubscribeResponse) {return SOAP_ERR;}
+        virtual	int Subscribe(_wsnt__Subscribe *wsnt__Subscribe, _wsnt__SubscribeResponse *wsnt__SubscribeResponse); //ZCU{return SOAP_ERR;}
 
         /// Web service operation 'GetCurrentMessage' (returns error code or SOAP_OK)
         virtual	int GetCurrentMessage(_wsnt__GetCurrentMessage *wsnt__GetCurrentMessage, _wsnt__GetCurrentMessageResponse *wsnt__GetCurrentMessageResponse) { return SOAP_ERR; }
 
         /// Web service one-way operation 'Notify' (return error code, SOAP_OK (no response), or send_Notify_empty_response())
-        virtual	int Notify(_wsnt__Notify *wsnt__Notify) {return SOAP_ERR;}
+        virtual	int Notify(_wsnt__Notify *wsnt__Notify); //ZCU {return SOAP_ERR;}
         virtual	int send_Notify_empty_response(int httpcode) { return soap_send_empty_response(this->soap, httpcode); }
 
         /// Web service operation 'GetMessages' (returns error code or SOAP_OK)

@@ -38,7 +38,7 @@ message(STATUS "The GSOAP plugin directory: ${GSOAP_PLUGIN_DIR}")
 
 add_definitions(-DWITH_PURE_VIRTUAL)
 add_definitions(-DWITH_NONAMESPACES)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall")
 
 set(OSDK_GEN_SOURCE_DIR ${PROJECT_BINARY_DIR}/src)
 add_subdirectory(xml)
