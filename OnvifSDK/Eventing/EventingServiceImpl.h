@@ -37,6 +37,76 @@ class NotificationConsumer;
         {
         }
 
+
+        virtual PullPointSubscriptionBindingService *copy()
+        {return NULL;}
+
+        virtual int PullMessages(_tev__PullMessages *tev__PullMessages, _tev__PullMessagesResponse &tev__PullMessagesResponse) 
+        {return SOAP_ERR;}
+
+        virtual int Seek(_tev__Seek *tev__Seek, _tev__SeekResponse &tev__SeekResponse)
+        {return SOAP_ERR;}
+
+        virtual int SetSynchronizationPoint(_tev__SetSynchronizationPoint *tev__SetSynchronizationPoint, _tev__SetSynchronizationPointResponse &tev__SetSynchronizationPointResponse)
+        {return SOAP_ERR;}
+
+        virtual int GetServiceCapabilities(_tev__GetServiceCapabilities *tev__GetServiceCapabilities, _tev__GetServiceCapabilitiesResponse &tev__GetServiceCapabilitiesResponse)
+        {return SOAP_ERR;}
+
+        /// Web service operation 'CreatePullPointSubscription' (returns error code or SOAP_OK)
+       	virtual int CreatePullPointSubscription(_tev__CreatePullPointSubscription *tev__CreatePullPointSubscription, _tev__CreatePullPointSubscriptionResponse &tev__CreatePullPointSubscriptionResponse)
+        {return SOAP_ERR;}
+
+        /// Web service operation 'GetEventProperties' (returns error code or SOAP_OK)
+        virtual int GetEventProperties(_tev__GetEventProperties *tev__GetEventProperties, _tev__GetEventPropertiesResponse &tev__GetEventPropertiesResponse)
+        {return SOAP_ERR;}
+
+        /// Web service operation 'Renew' (returns error code or SOAP_OK)
+        virtual int Renew(_wsnt__Renew *wsnt__Renew, _wsnt__RenewResponse &wsnt__RenewResponse)
+        {return SOAP_ERR;}
+
+        virtual int Unsubscribe(_wsnt__Unsubscribe *wsnt__Unsubscribe, _wsnt__UnsubscribeResponse &wsnt__UnsubscribeResponse) 
+        {return SOAP_ERR;}
+
+        virtual int Subscribe(_wsnt__Subscribe *wsnt__Subscribe, _wsnt__SubscribeResponse &wsnt__SubscribeResponse)
+        {return SOAP_ERR;}
+
+     //  virtual int GetCurrentMessage(_wsnt__GetCurrentMessage *wsnt__GetCurrentMessage, _wsnt__GetCurrentMessageResponse &wsnt__GetCurrentMessageResponse) 
+     //   {return SOAP_ERR;}
+
+        virtual int GetCurrentMessage(_wsnt__GetCurrentMessage *wsnt__GetCurrentMessage, _wsnt__GetCurrentMessageResponse &wsnt__GetCurrentMessageResponse)
+        {return SOAP_ERR;}
+
+        virtual int Notify(_wsnt__Notify *wsnt__Notify)
+        {return SOAP_ERR;}
+
+        virtual int GetMessages(_wsnt__GetMessages *wsnt__GetMessages, _wsnt__GetMessagesResponse &wsnt__GetMessagesResponse) 
+        {return SOAP_ERR;}
+
+       virtual int DestroyPullPoint(_wsnt__DestroyPullPoint *wsnt__DestroyPullPoint, _wsnt__DestroyPullPointResponse &wsnt__DestroyPullPointResponse) 
+        {return SOAP_ERR;}
+
+        virtual int Notify_(_wsnt__Notify *wsnt__Notify)
+        {return SOAP_ERR;}
+
+        virtual int CreatePullPoint(_wsnt__CreatePullPoint *wsnt__CreatePullPoint, _wsnt__CreatePullPointResponse &wsnt__CreatePullPointResponse) 
+        {return SOAP_ERR;}
+
+        virtual int Renew_(_wsnt__Renew *wsnt__Renew, _wsnt__RenewResponse &wsnt__RenewResponse)
+        {return SOAP_ERR;}
+
+       virtual int Unsubscribe_(_wsnt__Unsubscribe *wsnt__Unsubscribe, _wsnt__UnsubscribeResponse &wsnt__UnsubscribeResponse)
+        {return SOAP_ERR;}
+
+        virtual int PauseSubscription(_wsnt__PauseSubscription *wsnt__PauseSubscription, _wsnt__PauseSubscriptionResponse &wsnt__PauseSubscriptionResponse) 
+        {return SOAP_ERR;}
+
+        virtual int ResumeSubscription(_wsnt__ResumeSubscription *wsnt__ResumeSubscription, _wsnt__ResumeSubscriptionResponse &wsnt__ResumeSubscriptionResponse)
+	{return SOAP_ERR;}
+
+
+
+/*ZCU
         virtual	PullPointSubscriptionBindingService *copy();
 	// { return new EventingServiceImpl(*this);} // ZCU: up to now withiout error handling 
 
@@ -96,6 +166,9 @@ class NotificationConsumer;
 
         /// Web service operation 'ResumeSubscription' (returns error code or SOAP_OK)
         virtual	int ResumeSubscription(_wsnt__ResumeSubscription *wsnt__ResumeSubscription, _wsnt__ResumeSubscriptionResponse *wsnt__ResumeSubscriptionResponse) { return SOAP_ERR; }
+
+*/
+
     };
 
 #endif //WebEventingServiceImpl_H
