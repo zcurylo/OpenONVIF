@@ -36,6 +36,8 @@ message(STATUS "The GSOAP libraries: ${GSOAP_LIBRARIES}")
 message(STATUS "The GSOAP import directory: ${GSOAP_IMPORT_DIR}")
 message(STATUS "The GSOAP plugin directory: ${GSOAP_PLUGIN_DIR}")
 
+
+
 add_definitions(-DWITH_PURE_VIRTUAL)
 add_definitions(-DWITH_NONAMESPACES)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall")
@@ -189,6 +191,16 @@ file(GLOB EVNT_FILES ${PROJECT_SOURCE_DIR}/Eventing/*)
 
 file(GLOB OSDK_HEADERS ${PROJECT_SOURCE_DIR}/include/*.h)
 file(GLOB OSDK_SOURCES ${PROJECT_SOURCE_DIR}/source/*.cpp)
+
+message(STATUS "WHAT GOES TO COMPLATION")
+message(STATUS "SOURCES: ${SOURCES}")
+message(STATUS "HEADERS: ${HEADERS}")
+message(STATUS "OSDK_GEN_FILES: ${OSDK_GEN_FILES}")
+message(STATUS "EVNT_FILES: ${EVNT_FILES}")
+message(STATUS "WSD_FILES: ${WSD_FILES}")
+message(STATUS "OSDK_HEADERS: ${OSDK_HEADERS}")
+message(STATUS "OSDK_SOURCES: ${OSDK_SOURCES}")
+
 
 add_library(OnvifSDK STATIC     ${SOURCES} ${HEADERS}
                                 ${OSDK_GEN_FILES}

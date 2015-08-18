@@ -61,6 +61,9 @@ int AnalythicsServiceImpl::DeleteAnalyticsModules(_tan__DeleteAnalyticsModules *
     // Web service operation 'ModifyAnalyticsModules' (returns error code or SOAP_OK)
 int AnalythicsServiceImpl::ModifyAnalyticsModulesZCU(_tan__ModifyAnalyticsModules *tan__ModifyAnalyticsModules, _tan__ModifyAnalyticsModulesResponse *tan__ModifyAnalyticsModulesResponse)
 {
-	return SOAP_ERR;	
+	return SOAP_ERR;
+	aaaaaaaaaa
+	new
+	misiek();	
 }
 #endif //ANALY_S

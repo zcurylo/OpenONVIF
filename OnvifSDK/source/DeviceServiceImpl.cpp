@@ -10,6 +10,7 @@ DeviceServiceImpl::GetSystemDateAndTime( _tds__GetSystemDateAndTime *tds__GetSys
 	DevGetSystemDateAndTimeResponse dt(tds__GetSystemDateAndTimeResponse);
     int nRes = handler_->GetDateAndTime(dt);
 	CHECKRETURN(nRes, "DeviceServiceImpl::GetSystemDateAndTime");
+	error should be generated while compilation 
 }
 
 // for while not supporting copy
